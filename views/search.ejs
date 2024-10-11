@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Books</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .search-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .search-container input {
+      padding: 10px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .search-container button {
+      padding: 10px;
+      margin-left: 10px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .search-container button:hover {
+      background-color: #0056b3;
+    }
+
+    .book-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .book-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 200px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .book-card:hover {
+      transform: scale(1.05);
+    }
+
+    .book-card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+
+    .book-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .book-author {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .book-published {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .no-results {
+      text-align: center;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Search for Books</h1>
+  <div class="search-container">
+    <form action="/search" method="get">
+      <input type="text" name="q" value="<%= query %>" placeholder="Enter book title or author..." required>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+
+
+</body>
+</html>

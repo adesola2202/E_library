@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>School Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/adminboard.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons and CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      <nav class="sidebar bg-dark">
+        <div class="sidebar-logo">
+          <a href="index.ejs" class="logo">
+            <img
+              src="/images/school logo.jpeg"
+              alt="School Admin"
+              class="navbar-brand"
+              height="40"
+            />
+          </a>
+        </div>
+        <ul class="nav flex-column">
+          <li class="nav-item active">
+            <a href="#dashboard" class="nav-link">
+              <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#students" class="nav-link">
+              <i class="fas fa-user-graduate"></i> Students
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#teachers" class="nav-link">
+              <i class="fas fa-chalkboard-teacher"></i> Teachers
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#classes" class="nav-link">
+              <i class="fas fa-school"></i> Classes
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#exams" class="nav-link">
+              <i class="fas fa-file-alt"></i> Exams
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#reports" class="nav-link">
+              <i class="fas fa-chart-line"></i> Reports
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#e-library" class="nav-link">
+              <i class="fas fa-chart-line"></i> E-library
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <button class="navbar-toggler" type="button" data-toggle="collapse">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="navbar-brand">School Admin Dashboard</div>
+          <div class="ml-auto">
+            <button class="btn btn-outline-secondary">Logout</button>
+          </div>
+        </nav>
+
+        <div class="content">
+          <h2 class="page-title">Dashboard Overview</h2>
+          <!-- Content goes here -->
+          <div class="card-deck">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Students</h5>
+                <p class="card-text">Manage student records and profiles.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Teachers</h5>
+                <p class="card-text">Manage teacher information and schedules.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Classes</h5>
+                <p class="card-text">Overview of classes and subjects.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Exams</h5>
+                <p class="card-text">Monitor exam schedules and results.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Want To Read Books</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .book-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .book-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 200px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .book-card:hover {
+      transform: scale(1.05);
+    }
+
+    .book-card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+
+    .book-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .book-author {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .book-start {
+      font-size: 14px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Want To Read Books</h1>
+  <div class="book-container">
+    <% books.forEach(book => { %>
+      <div class="book-card">
+        <img src="<%= book.work.cover_id ? 'https://covers.openlibrary.org/b/id/' + book.work.cover_id + '-L.jpg' : 'default-image.jpg' %>" alt="<%= book.work.title %>">
+        <h2 class="book-title"><%= book.work.title %></h2>
+        <p class="book-author"><%= book.work.authors ? book.work.authors.map(author => author.name).join(', ') : 'Unknown Author' %></p>
+        <p class="book-start">Started: <%= book.started_reading || 'Unknown' %></p>
+      </div>
+    <% }) %>
+  </div>
+
+</body>
+</html>
