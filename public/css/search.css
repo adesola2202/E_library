@@ -1,0 +1,142 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Header */
+header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+header h1 {
+    margin-bottom: 1rem;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: black;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #e74c3c;
+}
+
+form {
+    margin-bottom: 1rem;
+}
+
+form input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 250px;
+    margin-right: 10px;
+}
+
+form button {
+    padding: 10px 15px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #c0392b;
+}
+
+/* Search Results Section */
+section {
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0;
+}
+
+li {
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    border-radius: 8px;
+    padding: 15px;
+    width: 200px;
+    text-align: center; /* Center text */
+    color: black;
+}
+
+img {
+    width: 100%; /* Responsive image */
+    height: auto;
+    margin-bottom: 10px;
+}
+
+/* Button Styles */
+.read-more,
+.read-less {
+    background-color: transparent; /* Primary color */
+    color: rgb(109, 109, 243); /* Text color */
+    padding: 5px 10px; /* Padding for button */
+    text-decoration: none; /* Remove underline */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Transition effect */
+    margin-left: 5px; /* Space between buttons */
+    display: inline-block; /* Make sure the buttons stay inline */
+    font-size: 0.9rem; /* Adjust font size */
+}
+
+.read-more:hover,
+.read-less:hover {
+    background-color: #eaeff4; /* Darker shade on hover */
+}
+
+.read-less {
+    background-color: #e74c3c; /* Different color for Read Less */
+}
+
+.read-less:hover {
+    background-color: #c0392b; /* Darker shade for hover */
+}
+
+/* Ensure the parent <p> does not break layout */
+.book-description {
+    display: flex; /* Use flexbox to keep buttons in line */
+    align-items: center; /* Center buttons vertically */
+}

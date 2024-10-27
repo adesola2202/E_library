@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Books</title>
+    <link rel="stylesheet" href="/css/managebooks.css">
+</head>
+<body>
+    <h1>Manage Books</h1>
+    <form action="/manage_books/add" method="post"> 
+        <input type="text" name="title" placeholder="Title" required>
+        <input type="text" name="author" placeholder="Author" required>
+        <textarea name="description" placeholder="Description"></textarea>
+        <input type="text" name="imageLinks" placeholder="Image Link">
+        <input type="text" name="previewLink" placeholder="Preview Link">
+        <button type="submit">Add Book</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Actions</th>
+        </tr>
+        <% books.forEach(book => { %>
+        <tr>
+            <td><%= book.title %></td>
+            <td><%= book.author %></td>
+            <td>
+                <form action="/manage_books/delete" method="post"> 
+                    <input type="hidden" name="bookId" value="<%= book._id %>">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        <% }) %>
+    </table>
+</body>
+</html>

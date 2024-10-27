@@ -5,33 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Registration</title>
     <link rel="stylesheet" href="/css/adminregister.css">
+    <script>
+        // Function to clear the error message
+        function clearError() {
+            const errorMessage = document.getElementById("error-message");
+            if (errorMessage) {
+                errorMessage.innerHTML = ''; // Clear the error message text
+                errorMessage.style.display = 'none'; // Hide the error message
+            }
+        }
+
+        // Attach the clearError function to all input fields
+        document.addEventListener("DOMContentLoaded", function() {
+            const inputs = document.querySelectorAll("input");
+            inputs.forEach(input => {
+                input.addEventListener("focus", clearError); // Clear error on focus
+            });
+        });
+    </script>
 </head>
 <body>
 <div id="register-container">
     <form action="/userregister" method="post">
-        <h2>Welcome to Registration page</h2>
+        <h2>Welcome to the Registration Page</h2>
+
+        <!-- Display error message here -->
+        <% if (error) { %>
+            <div class="error-message" id="error-message" style="display: block;"><%= error %></div>
+        <% } %>
+
         <div>
             <label for="username">Username</label>
             <input type="text" name="username" id="username">
         </div>
         <div>
             <label for="email">Email</label>
-            <input type="email" name="email" id="email" placeholder="enter your email">
+            <input type="email" name="email" id="email" placeholder="Enter your email">
         </div>
 
         <div>
             <label for="password">Password</label>
-            <input type="password" name="password" id="password" placeholder="enter your password">
+            <input type="password" name="password" id="password" placeholder="Enter your password">
         </div>
 
         <div>
-            <label for="password">Confirm Password</label>
-            <input type="password" name="confirm" id="confirm" placeholder="Confirmn Password">
+            <label for="confirm">Confirm Password</label>
+            <input type="password" name="confirm" id="confirm" placeholder="Confirm Password" >
         </div>
 
-        <button type="submit">Sign in </button>
+        <button type="submit">Sign in</button>
 
-        <p>if account already exist <a href="/userlogin">login</a>  </p>
+        <p>If an account already exists, <a href="/userlogin">login</a></p>
     </form>
 </div>
 </body>

@@ -1,81 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Want To Read Books</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-
-    .book-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    .book-card {
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 200px;
-      padding: 20px;
-      text-align: center;
-      transition: transform 0.3s ease;
-    }
-
-    .book-card:hover {
-      transform: scale(1.05);
-    }
-
-    .book-card img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 5px;
-      margin-bottom: 15px;
-    }
-
-    .book-title {
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 10px;
-    }
-
-    .book-author {
-      font-size: 16px;
-      color: #666;
-      margin-bottom: 10px;
-    }
-
-    .book-start {
-      font-size: 14px;
-      color: #999;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Want to Read</title>
+    <link rel="stylesheet" href="/css/wantToRead.css">
+    </style>
 </head>
 <body>
+    <header>
+        <h1>Want to Read</h1>
+        <nav>
+            <ul>
+                <li><a href="/homepage">Home</a></li>
+                <li><a href="/currently-reading">Currently Reading</a></li>
+                <li><a href="/want-to-read">Want to Read</a></li>
+                <li><a href="/search">Search</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <h1>Want To Read Books</h1>
-  <div class="book-container">
-    <% books.forEach(book => { %>
-      <div class="book-card">
-        <img src="<%= book.work.cover_id ? 'https://covers.openlibrary.org/b/id/' + book.work.cover_id + '-L.jpg' : 'default-image.jpg' %>" alt="<%= book.work.title %>">
-        <h2 class="book-title"><%= book.work.title %></h2>
-        <p class="book-author"><%= book.work.authors ? book.work.authors.map(author => author.name).join(', ') : 'Unknown Author' %></p>
-        <p class="book-start">Started: <%= book.started_reading || 'Unknown' %></p>
-      </div>
-    <% }) %>
-  </div>
+    <section>
+        <h2>Your Want to Read Books</h2>
+        <ul>
+            <% wantToReadBooks.forEach(book => { %>
+                <li>
+                    <img src="<%= book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/128x198' %>" alt="Book Cover">
+                    <div>
+                        <h3><%= book.volumeInfo.title %></h3>
+                        <p>Authors: <%= book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : 'Unknown' %></p><br>
+                        <p>
+                            <span id="description-<%= book.id %>">
+                                <%= book.volumeInfo.description ? book.volumeInfo.description.split(' ').slice(0, 10).join(' ') : 'No description available.' %>
+                            </span>
+                            <span id="dots-<%= book.id %>" style="display: none;">...</span>
+                            <span id="more-<%= book.id %>" style="display: none;">
+                                <%= book.volumeInfo.description ? book.volumeInfo.description.split(' ').slice(10).join(' ') : '' %>
+                            </span>
+                            <button class="read-more" onclick="toggleDescription('<%= book.id %>')">Read More</button>
+                            <a href="<%= book.volumeInfo.previewLink %>" target="_blank" class="preview-link">Preview</a> <!-- Preview link -->
+                        </p>
+                    </div>
+                </li>
+            <% }); %>
+        </ul>
+    </section>
 
+    <!-- Modal -->
+    <div id="descriptionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle"></h3>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
+    <script>
+        function toggleDescription(bookId) {
+            const dots = document.getElementById(`dots-${bookId}`);
+            const moreText = document.getElementById(`more-${bookId}`);
+            const description = document.getElementById(`description-${bookId}`);
+            
+            if (moreText.style.display === "none") {
+                dots.style.display = "inline";
+                moreText.style.display = "inline";
+            } else {
+                dots.style.display = "none";
+                moreText.style.display = "none";
+            }
+        }
+
+        function openModal(title, description) {
+            document.getElementById("modalTitle").innerText = title;
+            document.getElementById("modalDescription").innerText = description;
+            document.getElementById("descriptionModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("descriptionModal").style.display = "none";
+        }
+
+        // Bind click event to read more buttons to open modal
+        document.querySelectorAll('.read-more').forEach(button => {
+            button.addEventListener('click', function() {
+                const bookId = this.parentNode.querySelector('span').id.split('-')[1];
+                const title = this.parentNode.parentNode.querySelector('h3').innerText;
+                const fullDescription = this.parentNode.querySelector(`#more-${bookId}`).innerText;
+
+                openModal(title, fullDescription);
+            });
+        });
+    </script>
 </body>
 </html>

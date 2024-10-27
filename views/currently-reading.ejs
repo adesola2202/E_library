@@ -1,103 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Currently Reading Books</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-
-    .book-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    .book-card {
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 200px;
-      padding: 20px;
-      text-align: center;
-      transition: transform 0.3s ease;
-    }
-
-    .book-card:hover {
-      transform: scale(1.05);
-    }
-
-    .book-card img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 5px;
-      margin-bottom: 15px;
-    }
-
-    .book-title {
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 10px;
-    }
-
-    .book-author {
-      font-size: 16px;
-      color: #666;
-      margin-bottom: 10px;
-    }
-
-    .book-start {
-      font-size: 14px;
-      color: #999;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currently Reading</title>
+    <link rel="stylesheet" href="/css/currently.css">
 </head>
 <body>
-  <h1>Search for Books</h1>
-  <div class="search-container">
-    <form action="/search" method="get">
-      <input type="text" name="q" value="" placeholder="Enter book title or author..." required>
-      <button type="submit">Search</button>
-    </form>
-  </div>
+    <header>
+        <h1>Currently Reading</h1>
+        <nav>
+            <ul>
+                <li><a href="/homepage">Home</a></li>
+                <li><a href="/currently-reading">Currently Reading</a></li>
+                <li><a href="/want-to-read">Want to Read</a></li>
+                <li><a href="/search">Search</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <div class="book-container">
-    <% if (books.length === 0) { %>
-      <p class="no-results">No results found for "<%= query %>"</p>
-    <% } else { %>
-      <% books.forEach(book => { %>
-        <div class="book-card">
-          <img src="<%= book.cover_i ? 'https://covers.openlibrary.org/b/id/' + book.cover_i + '-L.jpg' : 'default-image.jpg' %>" alt="<%= book.title %>">
-          <h2 class="book-title"><%= book.title %></h2>
-          <p class="book-author"><%= book.author_name ? book.author_name.join(', ') : 'Unknown Author' %></p>
-          <p class="book-published">Published: <%= book.first_publish_year || 'Unknown' %></p>
-        </div>
-      <% }) %>
-    <% } %>
-  </div>
-
-  <h1>Currently Reading Books</h1>
-  <div class="book-container">
-    <% books.forEach(book => { %>
-      <div class="book-card">
-        <img src="<%= book.work.cover_id ? 'https://covers.openlibrary.org/b/id/' + book.work.cover_id + '-L.jpg' : 'default-image.jpg' %>" alt="<%= book.work.title %>">
-        <h2 class="book-title"><%= book.work.title %></h2>
-        <p class="book-author"><%= book.work.authors ? book.work.authors.map(author => author.name).join(', ') : 'Unknown Author' %></p>
-        <p class="book-start">Started: <%= book.started_reading || 'Unknown' %></p>
-      </div>
-    <% }) %>
-  </div>
-
+    <section>
+        <h2>Your Currently Reading Books</h2>
+        <ul class="book-list">
+            <% currentlyReadingBooks.forEach(book => { %>
+                <li class="book-item">
+                    <img src="<%= book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/128x198' %>" alt="Book Cover">
+                    <div>
+                        <h3><%= book.volumeInfo.title %></h3>
+                        <p>Authors: <%= book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : 'Unknown' %></p>
+                        <p>
+                            <a href="<%= book.previewLink %>" target="_blank" class="preview-link">Preview</a>
+                        </p>
+                    </div>
+                </li>
+            <% }); %>
+        </ul>
+    </section>
 </body>
 </html>
