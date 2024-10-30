@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="/css/search.css"> <!-- Link to external CSS -->
 </head>
 <body>
+          <!-- Loading Modal -->
+    <div id="loadingModal">
+        <div class="loader-container">
+            <div class="spinner"></div>
+            <p class="loader-text">Loading your library...</p>
+      </div>
+    </div>
+        
     <header>
         <h1>Search for Books</h1>
         <nav>
@@ -22,58 +30,62 @@
             <button type="submit">Search</button>
         </form>
     </header>
-
     <section>
-        <h2>Search Results</h2>
-        <ul>
-            <% books.forEach(book => { %>
-              <li>
-                <!-- Book Cover -->
-                <img src="<%= book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/128x198' %>" alt="Book Cover">
-                
-                <!-- Book Title -->
-                <h3><%= book.volumeInfo.title %></h3>
-          
-                <!-- Book Description with Read More/Read Less Toggle -->
-                <p>
-                  <span id="description-<%= book.id %>">
-                    <%= book.volumeInfo.description ? book.volumeInfo.description.split(' ').slice(0, 10).join(' ') : 'No description available.' %>
-                  </span>
-                  <span id="dots-<%= book.id %>" style="display: none;">...</span>
-                  <span id="more-<%= book.id %>" style="display: none;">
-                    <%= book.volumeInfo.description ? book.volumeInfo.description.split(' ').slice(10).join(' ') : '' %>
-                  </span>
-          
-                  <!-- Read More/Read Less Buttons -->
-                  <a class="read-more" id="readMoreBtn-<%= book.id %>" onclick="toggleDescription('<%= book.id %>')">Read More</a>
-                  <a class="read-less" id="readLessBtn-<%= book.id %>" style="display: none;" onclick="toggleDescription('<%= book.id %>')">Read Less</a>
-                </p>
-          
-                <!-- Preview Button -->
-                <a href="<%= book.previewLink %>" target="_blank" class="preview-btn">Preview Book</a>
-              </li>
-            <% }); %>
-          </ul>
-        </section>  
-          <script>
-            function toggleDescription(bookId) {
-              const dots = document.getElementById(`dots-${bookId}`);
-              const moreText = document.getElementById(`more-${bookId}`);
-              const readMoreBtn = document.getElementById(`readMoreBtn-${bookId}`);
-              const readLessBtn = document.getElementById(`readLessBtn-${bookId}`);
-          
-              if (dots.style.display === "none") {
-                dots.style.display = "inline";
-                moreText.style.display = "none";
-                readMoreBtn.style.display = "inline";
-                readLessBtn.style.display = "none";
-              } else {
-                dots.style.display = "none";
-                moreText.style.display = "inline";
-                readMoreBtn.style.display = "none";
-                readLessBtn.style.display = "inline";
-              }
-            }
-          </script>
-</body>
+      <h2>Search Results</h2>
+      <ul>
+          <% books.forEach(book => { %>
+            <li>
+              <!-- Book Cover -->
+              <img src="<%= book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/128x198' %>" alt="Book Cover">
+              
+              <!-- Book Title -->
+              <h3><%= book.volumeInfo.title %></h3>
+        
+              <!-- Book Description with Read More/Read Less Toggle -->
+              <p>
+                <span id="description-<%= book.id %>">
+                  <%= book.volumeInfo.description ? book.volumeInfo.description.split(' ').slice(0, 10).join(' ') : 'No description available.' %>
+                </span>
+                <span id="dots-<%= book.id %>" style="display: none;">...</span>
+                <span id="more-<%= book.id %>" style="display: none;">
+                  <%= book.volumeInfo.description ? book.volumeInfo.description.split(' ').slice(10).join(' ') : '' %>
+                </span>
+        
+                <!-- Read More/Read Less Buttons -->
+                <a class="read-more" id="readMoreBtn-<%= book.id %>" onclick="toggleDescription('<%= book.id %>')">Read More</a>
+                <a class="read-less" id="readLessBtn-<%= book.id %>" style="display: none;" onclick="toggleDescription('<%= book.id %>')">Read Less</a>
+              </p>
+        
+              <!-- Preview Button -->
+              <a href="<%= book.volumeInfo.previewLink %>" target="_blank" class="preview-btn">Preview Book</a>
+            </li>
+          <% }); %>
+      </ul>
+  </section>  
+  
+  <script>
+        // Hide loading modal when page fully loads
+      window.addEventListener('load', function() {
+        document.getElementById('loadingModal').style.display = 'none';
+      });
+
+      function toggleDescription(bookId) {
+          const dots = document.getElementById(`dots-${bookId}`);
+          const moreText = document.getElementById(`more-${bookId}`);
+          const readMoreBtn = document.getElementById(`readMoreBtn-${bookId}`);
+          const readLessBtn = document.getElementById(`readLessBtn-${bookId}`);
+  
+          if (dots.style.display === "none") {
+              dots.style.display = "inline";
+              moreText.style.display = "none";
+              readMoreBtn.style.display = "inline";
+              readLessBtn.style.display = "none";
+          } else {
+              dots.style.display = "none";
+              moreText.style.display = "inline";
+              readMoreBtn.style.display = "none";
+              readLessBtn.style.display = "inline";
+          }
+      }
+  </script>
 </html>

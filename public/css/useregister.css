@@ -64,17 +64,6 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Error message styles */
-.error-message {
-    background-color: #f8d7da; /* Light red background */
-    color: #721c24; /* Dark red text */
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #f5c6cb; /* Red border */
-    border-radius: 5px;
-    display: none; /* Initially hidden */
-}
-
 /* Responsive design */
 @media (max-width: 600px) {
     #register-container {

@@ -38,6 +38,17 @@
             padding: 0;
         }
 
+        nav ul li.logout {
+        margin-left: auto;
+        }
+
+        /* nav a {
+         text-decoration: none;
+         color: #333;
+         padding: 8px 15px;
+         border-radius: 4px;
+        } */
+
         nav ul li {
             display: inline;
             margin: 0 15px;
@@ -181,9 +192,61 @@
             text-decoration: none;
             cursor: pointer;
         }
+
+        /* loader */
+                /* Loading Modal Styles */
+        #loadingModal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            z-index: 1000;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Logout Button Styling */
+        .logout-button {
+          background-color: #ff4d4d; /* Red color for emphasis */
+          color: #fff;
+          padding: 8px 15px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: bold;
+          transition: background-color 0.3s;
+        }
+
+        .logout-button:hover {
+          background-color: #e63946;
+        } 
+
     </style>
-</head> 
+</head>
 <body>
+        <!-- Loading Modal -->
+    <div id="loadingModal">
+        <div class="spinner"></div>
+    </div>
+
+    
     <header>
         <div class="container">
             <h1>E-Library</h1>
@@ -193,6 +256,9 @@
                     <li><a href="/currently-reading">Currently Reading</a></li>
                     <li><a href="/want-to-read">Want to Read</a></li>
                     <li><a href="/search">Search</a></li>
+                    <li class="logout">
+                        <a href="/logout" class="logout-button">Logout</a>
+                    </li>
                 </ul>
             </nav>
         </div>
@@ -210,20 +276,23 @@
         <div class="container">
             <h2>Book Suggestions for You</h2>
             <ul class="book-list">
-                <% suggestionBooks.forEach(book => { %>
-                    <li class="book-item">
-                        <img src="<%= book.imageLinks %>" alt="Book Cover"><br>
-                        <div class="book-details">
-                            <h3><%= book.title %></h3>
-                            <p>
-                                <%= book.description ? book.description.split(' ').slice(0, 10).join(' ') + '...' : 'No description available.' %>
-                                <a class="read-more" onclick="openModal('<%= book.title %>', '<%= book.description %>', '<%= book.imageLinks %>')">Read More</a>
-                                <a class="preview" onclick="openPreviewModal('<%= book.id %>')">Preview</a>
-                            </p>
-                        </div>
-                    </li>
-                <% }); %>
+                <% if (suggestionBooks && suggestionBooks.length > 0) { %>
+                    <% suggestionBooks.forEach(book => { %>
+                        <li class="book-item">
+                            <img src="<%= book.imageLinks %>" alt="Book Cover" class="book-cover"><br>
+                            <div class="book-details">
+                                <h3><%= book.title %></h3>
+                                <p><strong>Authors:</strong> <%= book.authors %></p>
+                                <p><strong>Description:</strong> <%= book.description %></p>
+                                <a href="<%= book.previewLink %>" target="_blank">Preview</a>
+                            </div>
+                        </li>
+                    <% }) %>
+                <% } else { %>
+                    <li>No suggestions available.</li>
+                <% } %>
             </ul>
+    
         </div>
     </section>
     <footer>
@@ -232,21 +301,13 @@
         </div>
     </footer>
 
-    <!-- Description Modal -->
+    <!-- Modal -->
     <div id="descriptionModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <img id="modalImage" src="" alt="Book Cover" style="width:150px; height:auto; margin-bottom: 15px; display: block; margin: auto 0;">
             <h3 id="modalTitle"></h3>
             <p id="modalDescription"></p>
-        </div>
-    </div>
-
-    <!-- Preview Modal -->
-    <div id="previewModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closePreviewModal()">&times;</span>
-            <iframe id="previewFrame" src="" style="width:100%; height:500px; border:none;"></iframe>
         </div>
     </div>
 
@@ -262,28 +323,19 @@
             document.getElementById("descriptionModal").style.display = "none";
         }
 
-        function openPreviewModal(bookId) {
-            const previewLink = `https://books.google.com/books?id=${bookId}&output=embed`  
-            document.getElementById("previewFrame").src = previewLink; // Set iframe src to the preview link
-            document.getElementById("previewModal").style.display = "block"; // Show the preview modal
-        }
-
-        function closePreviewModal() {
-            document.getElementById("previewModal").style.display = "none"; // Hide the preview modal
-            document.getElementById("previewFrame").src = ""; // Reset the iframe src to clear the content
-        }
-
         // Close modal when clicking outside of modal content
         window.onclick = function(event) {
-            const descriptionModal = document.getElementById("descriptionModal");
-            const previewModal = document.getElementById("previewModal");
-            if (event.target === descriptionModal) {
+            const modal = document.getElementById("descriptionModal");
+            if (event.target === modal) {
                 closeModal();
-            } else if (event.target === previewModal) {
-                closePreviewModal();
             }
         }
+
+        // Hide loading modal when page fully loads
+            window.addEventListener('load', function() {
+            document.getElementById('loadingModal').style.display = 'none';
+        });
+
     </script>
 </body>
 </html>
- 

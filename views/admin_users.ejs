@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - User Management</title>
+</head>
+<body>
+
+<h1>User Management</h1>
+
+<!-- Display Message -->
+<% if (message) { %>
+    <div class="message"><%= message %></div>
+<% } %>
+
+<!-- User List -->
+<div class="user-list">
+    <% if (users.length === 0) { %>
+        <div>No users found.</div>
+    <% } else { %>
+        <ul>
+            <% users.forEach(user => { %>
+                <li>
+                    <span><%= user.username %> (<%= user.email %>)</span>
+                    <form action="/admin/users/delete/<%= user._id %>" method="POST" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+            <% }); %>
+        </ul>
+    <% } %>
+</div>
+
+<!-- Add User Form -->
+<h2>Add New User</h2>
+<form action="/admin/users/add" method="POST">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Add User</button>
+</form>
+
+</body>
+</html>

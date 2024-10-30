@@ -8,6 +8,14 @@
     </style>
 </head>
 <body>
+            <!-- Loading Modal -->
+    <div id="loadingModal">
+            <div class="loader-container">
+                <div class="spinner"></div>
+                <p class="loader-text">Loading your library...</p>
+            </div>
+    </div>
+            
     <header>
         <h1>Want to Read</h1>
         <nav>
@@ -28,7 +36,7 @@
                     <img src="<%= book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/128x198' %>" alt="Book Cover">
                     <div>
                         <h3><%= book.volumeInfo.title %></h3>
-                        <p>Authors: <%= book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : 'Unknown' %></p><br>
+                        <p>Authors: <%= book.volumeInfo.authors ? book.volumeInfo.authors : 'Unknown' %></p><br>
                         <p>
                             <span id="description-<%= book.id %>">
                                 <%= book.volumeInfo.description ? book.volumeInfo.description.split(' ').slice(0, 10).join(' ') : 'No description available.' %>
@@ -89,6 +97,11 @@
 
                 openModal(title, fullDescription);
             });
+        });
+
+        // Hide loading modal when page fully loads
+        window.addEventListener('load', function() {
+        document.getElementById('loadingModal').style.display = 'none';
         });
     </script>
 </body>
