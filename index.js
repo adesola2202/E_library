@@ -33,6 +33,7 @@ server.use(cors())
 server.use(bodyParser.urlencoded({extended:true}))
 const user = require("./model/user")
 const authenticateToken = require("./model/authorise")
+const { log } = require("console")
 server.set("view engine","ejs")
 
 
@@ -101,7 +102,8 @@ server.get("/login",(req,res)=>{
 
 // Login route
 server.post("/login", async(req, res) => {
-   const email = req.body. email.trim();
+   const email = req.body.email.trim();
+   console.log(email)
    const password = req.body.password.trim();
     if (!email ||!password) {
     return res.status(422).json({ error: "please fill the data" });
@@ -133,8 +135,8 @@ server.post("/login", async(req, res) => {
 })
 
 server.post("/logout", (req,res)=>{
-    res.clearCookie("token")
-    res.render("login")
+    session.clear
+    res.redirect("/login")
 })
 
       

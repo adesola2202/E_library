@@ -223,8 +223,8 @@
         }
 
         /* Logout Button Styling */
-        .logout-button {
-          background-color: #ff4d4d; /* Red color for emphasis */
+        #logout-button {
+          background-color:rgb(250, 78, 78); /* Red color for emphasis */
           color: #fff;
           padding: 8px 15px;
           border: none;
@@ -234,8 +234,8 @@
           transition: background-color 0.3s;
         }
 
-        .logout-button:hover {
-          background-color: #e63946;
+        #logout-button:hover {
+          background-color: #fb0c20;
         } 
 
     </style>
@@ -245,8 +245,9 @@
     <div id="loadingModal">
         <div class="spinner"></div>
     </div>
-
-    
+<form action="/logout" method="post">
+    <button type="submit" id="logout-button">LOG OUT</button>
+</form>
     <header>
         <div class="container">
             <h1>E-Library</h1>
@@ -256,9 +257,6 @@
                     <li><a href="/currently-reading">Currently Reading</a></li>
                     <li><a href="/want-to-read">Want to Read</a></li>
                     <li><a href="/search">Search</a></li>
-                    <li class="logout">
-                        <a href="/logout" class="logout-button">Logout</a>
-                    </li>
                 </ul>
             </nav>
         </div>
