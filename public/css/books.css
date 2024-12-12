@@ -1,0 +1,51 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+}
+
+h1 {
+    text-align: center;
+    color: #444;
+    font-size: 2.5em;
+    margin-top: 20px;
+}
+
+.book-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 0;
+    list-style: none;
+}
+
+.book-item {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.2s;
+}
+
+.book-item:hover {
+    transform: translateY(-5px);
+}
+
+.book-item h2 {
+    font-size: 1.5em;
+    margin: 0;
+    color: #1a73e8;
+}
+
+.book-item p {
+    margin: 10px 0;
+    color: #555;
+}

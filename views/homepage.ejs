@@ -3,253 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Library Home</title>
+    <title>Books Library</title>
     <link rel="stylesheet" href="/css/homepage.css">
-    <style>
-        /* General Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Georgia', serif;
-            line-height: 1.6;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-
-        /* Header */
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 1rem 0;
-            text-align: center;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        nav ul li.logout {
-        margin-left: auto;
-        }
-
-        /* nav a {
-         text-decoration: none;
-         color: #333;
-         padding: 8px 15px;
-         border-radius: 4px;
-        } */
-
-        nav ul li {
-            display: inline;
-            margin: 0 15px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 1.2rem;
-            transition: color 0.3s ease;
-        }
-
-        nav ul li a:hover {
-            color: #e74c3c;
-        }
-
-        /* Intro Section */
-        #intro {
-            background: url('/images/e-library background.jpg') no-repeat center center/cover;
-            color: white;
-            text-align: center;
-            padding: 4rem 0;
-        }
-
-        #intro h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        #intro p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
-        #intro .btn {
-            background-color: #e74c3c;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            font-size: 1.1rem;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        #intro .btn:hover {
-            background-color: #c0392b;
-        }
-
-        /* Suggestions Section */
-        #suggestions {
-            padding: 3rem 0;
-            background-color: #ecf0f1;
-        }
-
-        #suggestions h2 {
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 2rem;
-        }
-
-        .book-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-        }
-
-        .book-item {
-            background-color: white;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            width: 250px;
-            margin: 10px;
-            padding: 15px;
-            border-radius: 8px;
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start; /* Align items to the start */
-        }
-
-        .book-item:hover {
-            transform: scale(1.05);
-        }
-
-        img {
-            width: 100px; /* Set a fixed width for book covers */
-            height: auto;
-            margin-right: 15px;
-        }
-
-        /* Styling for Read More link */
-        .read-more {
-            background-color: #007bff; /* Bootstrap primary color */
-            color: white; /* White text color */
-            padding: 10px 15px; /* Add padding for a button-like appearance */
-            border-radius: 5px; /* Rounded corners */
-            text-decoration: none; /* Remove underline */
-            display: inline-block; /* Allow for padding and margin */
-            font-weight: bold; /* Bold text */
-            transition: background-color 0.3s ease; /* Smooth background color transition */
-            margin-top: 10px; /* Space above the button */
-        }
-
-        .read-more:hover {
-            background-color: #0056b3; /* Darker shade on hover */
-            cursor: pointer; /* Change cursor to pointer */
-        }
-
-        /* Modal styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto; /* 15% from the top and centered */
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%; /* Could be more or less, depending on screen size */
-            border-radius: 5px;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* loader */
-                /* Loading Modal Styles */
-        #loadingModal {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: fixed;
-            z-index: 1000;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        .spinner {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid #3498db;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Logout Button Styling */
-        #logout-button {
-          background-color:rgb(250, 78, 78); /* Red color for emphasis */
-          color: #fff;
-          padding: 8px 15px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-weight: bold;
-          transition: background-color 0.3s;
-        }
-
-        #logout-button:hover {
-          background-color: #fb0c20;
-        } 
-
-    </style>
 </head>
 <body>
-        <!-- Loading Modal -->
-    <div id="loadingModal">
-        <div class="spinner"></div>
-    </div>
-<form action="/logout" method="post">
-    <button type="submit" id="logout-button">LOG OUT</button>
-</form>
+
+    <!-- Header Section -->
     <header>
         <div class="container">
+            
+            <form action="/logout" method="post" id="logout-form">
+                <button type="submit" id="logout-button">LOG OUT</button>
+            </form>
             <h1>E-Library</h1>
             <nav>
                 <ul>
@@ -257,11 +22,13 @@
                     <li><a href="/currently-reading">Currently Reading</a></li>
                     <li><a href="/want-to-read">Want to Read</a></li>
                     <li><a href="/search">Search</a></li>
+
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- Intro Section -->
     <section id="intro">
         <div class="container">
             <h2>Discover, Read, and Explore</h2>
@@ -270,50 +37,68 @@
         </div>
     </section>
 
-    <section id="suggestions">
-        <div class="container">
-            <h2>Book Suggestions for You</h2>
-            <ul class="book-list">
-                <% if (suggestionBooks && suggestionBooks.length > 0) { %>
-                    <% suggestionBooks.forEach(book => { %>
-                        <li class="book-item">
-                            <img src="<%= book.imageLinks %>" alt="Book Cover" class="book-cover"><br>
-                            <div class="book-details">
-                                <h3><%= book.title %></h3>
-                                <p><strong>Authors:</strong> <%= book.authors %></p>
-                                <p><strong>Description:</strong> <%= book.description %></p>
-                                <a href="<%= book.previewLink %>" target="_blank">Preview</a>
-                            </div>
-                        </li>
-                    <% }) %>
-                <% } else { %>
-                    <li>No suggestions available.</li>
-                <% } %>
-            </ul>
-    
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSuccessModal()">&times;</span>
+            <div style="font-size: 40px; color: green; text-align: center;">✔</div>
+            <p style="font-size: 20px; text-align: center;">Book added to "Want to Read" successfully!</p>
         </div>
-    </section>
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 eLibrary. All Rights Reserved.</p>
-        </div>
-    </footer>
+    </div>
+
+    <!-- Library Container -->
+    <div class="library-container">
+        <ul class="book-list">
+            <% books.forEach(book => { %>
+                <li class="book-item">
+                    <img src="<%= book.image || '/path/to/default-image.jpg' %>" alt="<%= book.title %>">
+                    <div class="book-info">
+                        <h2><%= book.title %></h2>
+                        <p>Author: <%= book.author %></p>
+                        <p>
+                            <%= book.description ? book.description.split(' ').slice(0, 10).join(' ') + '...' : 'No description available.' %>
+                            <button class="read-more" 
+                                    data-title="<%= book.title %>" 
+                                    data-description="<%= book.description || 'No description available.' %>" 
+                                    data-image="<%= book.image || '/path/to/default-image.jpg' %>">
+                               Read More
+                            </button>
+                        </p>
+                        
+                        <!-- "Read this book" Button -->
+                        <a href="/add-to-currently-reading/<%= book._id %>" class="btn">Read this book</a>
+
+                        <!-- Add to Want to Read Button -->
+                        <form action="/add-to-want-to-read" method="POST" onsubmit="handleAddToWantToRead(event)">
+                            <input type="hidden" name="bookId" value="<%= book._id %>">
+                            <button type="submit" class="btn">Add to Want to Read</button>
+                        </form>
+                        
+                        
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
 
     <!-- Modal -->
     <div id="descriptionModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <img id="modalImage" src="" alt="Book Cover" style="width:150px; height:auto; margin-bottom: 15px; display: block; margin: auto 0;">
-            <h3 id="modalTitle"></h3>
+            <h2 id="modalTitle"></h2>
             <p id="modalDescription"></p>
         </div>
     </div>
 
     <script>
+        // Modal functionality
         function openModal(title, description, imageSrc) {
-            document.getElementById("modalTitle").innerText = title;
-            document.getElementById("modalDescription").innerText = description || "No description available.";
-            document.getElementById("modalImage").src = imageSrc || "";
+            document.getElementById("modalTitle").textContent = title;
+            document.getElementById("modalDescription").textContent = description;
+            document.getElementById("modalImage").src = imageSrc;
+
             document.getElementById("descriptionModal").style.display = "block";
         }
 
@@ -321,19 +106,46 @@
             document.getElementById("descriptionModal").style.display = "none";
         }
 
-        // Close modal when clicking outside of modal content
-        window.onclick = function(event) {
-            const modal = document.getElementById("descriptionModal");
-            if (event.target === modal) {
-                closeModal();
-            }
-        }
-
-        // Hide loading modal when page fully loads
-            window.addEventListener('load', function() {
-            document.getElementById('loadingModal').style.display = 'none';
+        // Event listener for the Read More button
+        document.addEventListener("DOMContentLoaded", function() {
+            const readMoreButtons = document.querySelectorAll('.read-more');
+            
+            readMoreButtons.forEach((button) => {
+                button.addEventListener("click", function() {
+                    const title = button.getAttribute('data-title');
+                    const description = button.getAttribute('data-description');
+                    const imageSrc = button.getAttribute('data-image');
+                    openModal(title, description, imageSrc);
+                });
+            });
         });
 
+         //Show success
+        function handleAddToWantToRead(event) {
+            event.preventDefault(); // Prevents the form from reloading the page
+            showSuccessModal(); // Show the success modal
+            // submit the form manually using JavaScript after showing the modal
+            event.target.submit();
+        }
+
+        function showSuccessModal() {
+            const modal = document.getElementById("successModal");
+            modal.style.display = "block";
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById("successModal");
+            modal.style.display = "none";
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById("successModal");
+            if (event.target === modal) {
+                closeSuccessModal();
+            }
+        };
     </script>
+
 </body>
 </html>

@@ -1,23 +1,27 @@
-const express = require("express")
-const server = express()
-const cors = require("cors")
-const mongodb = require("mongodb")
-const dotenv = require("dotenv")
-const bcrypt = require("bcrypt")
+const express = require("express") // it simplifies craeting web server
+const server = express() // create varaiable to hold the application
+const cors = require("cors") //accept share resource with other domain 
+const mongodb = require("mongodb")// Nosql thats uses json like document
+const dotenv = require("dotenv")//configuration file to store secret 
 dotenv.config()
-const client =new mongodb.MongoClient(process.env.DB_URL)
+const bcrypt = require("bcrypt")// to ehance security 
+const cloudinary = require("cloudinary").v2 // cloud storange 
+const client =new mongodb.MongoClient(process.env.DB_URL);
 const path = require("path")
 const cookieParser = require("cookie-parser") 
 const bodyParser = require("body-parser")
 const session = require("express-session")
-const axios = require('axios')
 const auth = require("./model/authorise")
-const auths = require("./model/user")
-const authent= require("./model/user")
-const authen = require("./model/currently")
-const authenticate = require("./model/search")
+const authenticate = require("./model/admi")
+const authent= require("./model/read") 
+const authen= require("./model/homepage")
+const authenti= require("./model/currently")
+const authentic= require("./model/search")
+const aut= require("./model/want")
+const au= require("./model/user")
 const jwt = require("jsonwebtoken")
-const mongoose = require("mongoose")
+const fs = require("fs")
+const multer = require('multer');
 server.use(
     session({
         secret:"keyboard",
@@ -30,10 +34,7 @@ server.use(cookieParser())
 server.use(express.json())
 server.use(express.static(path.join(__dirname,"public/")))
 server.use(cors())
-server.use(bodyParser.urlencoded({extended:true}))
-const user = require("./model/user")
-const authenticateToken = require("./model/authorise")
-const { log } = require("console")
+server.use(bodyParser.urlencoded({extended:true}))// allows nested object in the request body
 server.set("view engine","ejs")
 
 
@@ -42,107 +43,110 @@ server.set("view engine","ejs")
 const port = process.env.PORT || 3000
 const db_name = process.env.DB_NAME
 const db_table = process.env.DB_TABLE
+const apiKey = process.env.CLOUDINARY_KEY
+const secret = process.env.CLOUDINARY_SECRET
+const cloudName = process.env.CLOUDINARY_CLOUD_NAME
 
+cloudinary.config({
+    cloud_name :cloudName,
+    api_key:apiKey,
+    api_secret:secret
+})
 
-//google books key
-const apiKey = process.env.API_KEY
-const googleBooksAPI = 'https://www.googleapis.com/books/v1/volumes';
+//multer
+const img = path.join(__dirname,'public/images/uploaded')
+const storage = multer.diskStorage({
+    destination:(req,file,callback)=>{
+        callback(null,img)
+    },
+    filename:(req,file,callback)=>{
+        callback(null,file.originalname)
+    }
+})
+//activate multer storage setting
+const upload = multer({storage:storage }); 
 
-// Regular expressions
- const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// Password must be at least 8 characters long and contain at least one uppercase letter,one lowercase letter and one number.
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-
-// Track connection status
-let dbConnected = false;
 
 // Connect to MongoDB
+let dbConnected = false;
 async function connectToDatabase() {
     try {
         await client.connect();
         console.log("Connected to MongoDB");
         dbConnected = true; // Update flag when connected
-        await preRegisterAdmin(); // Pre-register the admin after connecting
+
     } catch (error) {
         console.error("Failed to connect to MongoDB:", error);
     }
 }
-
-// Function to pre-register the admin
-async function preRegisterAdmin() {
-    const adminCollection = client.db(process.env.DB_NAME).collection(db_table);
-
-    const adminEmail = 'adesolaadekola@gmail.com';
-    const adminPassword = 'Password123';
-    
-
-    const existingAdmin = await adminCollection.findOne({ email: adminEmail });
-    if (!existingAdmin) {
-        const hashedPassword = await bcrypt.hash(adminPassword, 10);
-        const admin = {
-            username: 'admin',
-            email: adminEmail,
-            password: hashedPassword,
-            role: 'admin'
-        };
-        await adminCollection.insertOne(admin);
-        console.log('Admin registered successfully');
-    } else {
-        console.log('Admin already exists');
-    }
-}
-
 // Call function to connect to the database
 connectToDatabase();
 
-server.get("/login",(req,res)=>{
-    res.render("login.ejs")
-})
 
 // Login route
-server.post("/login", async(req, res) => {
-   const email = req.body.email.trim();
-   console.log(email)
-   const password = req.body.password.trim();
-    if (!email ||!password) {
-    return res.status(422).json({ error: "please fill the data" });
-    }
-    await client.db(process.env.DB_NAME).collection(db_table).findOne({ email: email }).then((savedUser) => {
-    if(savedUser["isAdmin" ]){
-      if(savedUser["email"] == email){
-    bcrypt.compare(password, savedUser.password).then((doMatch) => {
-    if (doMatch) {
-    const token = jwt.sign({ _id: savedUser._id }, "secretkey", { expiresIn: '1h'});
-    const {_id, name, email } = savedUser; 
-    res.cookie("token", token, {httpOnly: true})
-     req.session.user = token
-     res.redirect("/holyland/admin");
-    }
-    else{
-    return res.status(422).json({ error: "invalid email or password" });
-    }
-  })
-  }
-    }else{
-        const token = jwt.sign({_id:savedUser._id},"secretkey");
-           const{_id,name,email} = savedUser
-           res.cookie("token",token,{httpOnly:true})
-           req.session.user = token
-           res.redirect("/homepage")
-    }
-})
+server.get("/login",(req,res)=>{
+    res.render("login.ejs",{message:null})
 })
 
-server.post("/logout", (req,res)=>{
-    session.clear
-    res.redirect("/login")
-})
+server.post("/login", async (req, res) => {
+    const email = req.body.email.trim();
+    const password = req.body.password.trim();
+
+    // Check if email or password is empty
+    if (!email || !password) {
+        return res.render('login', { message: "Please fill in all the fields." });
+    }
+
+    try {
+        const savedUser = await client.db(db_name).collection(db_table).findOne({ email: email });
+
+        if (!savedUser) {
+            return res.render('login', { message: "Invalid email or password." });
+        }
+
+        // Check if the user is an admin
+        if (savedUser.isAdmin) {
+            const doMatch = await bcrypt.compare(password, savedUser.password);
+            if (doMatch) {
+                const token = jwt.sign({ _id: savedUser._id }, "secretkey", { expiresIn: '1h' });//generate token
+                res.cookie("token", token, { httpOnly: true });// sends token as cookie with name token
+                req.session.user = token;
+                return res.redirect("/holyland/admin"); 
+            } else {
+                return res.render('login', { message: "Invalid email or password." });
+            }
+        } else {
+            const token = jwt.sign({ _id: savedUser._id }, "secretkey");
+            res.cookie("token", token, { httpOnly: true });
+            req.session.userId = savedUser._id.toString(); // Store user ID in session as a string
+            return res.redirect("/homepage");
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        return res.render('login', { message: "An error occurred. Please try again." });
+    }
+});
+
+
+server.post("/logout", (req, res) => {
+    // Clear the session (if any)
+    req.session?.destroy((err) => {
+        if (err) {
+            console.error("Error clearing session:", err);
+            return res.status(500).json({ message: "Logout failed" });
+        }
+
+        // Clear the token from cookies
+        res.clearCookie("token", { path: "/" }); // Adjust the path if needed
+        res.redirect("/login")
+    });
+});
 
       
 server.get("/holyland/home",(req,res)=>{
     res.render("index.ejs")
 })
+
 
 server.get("/holyland/events",(req,res)=>{
     res.render("events.ejs")
@@ -153,12 +157,23 @@ server.get("/holyland/gallery",(req,res)=>{
 })
 
 server.get("/holyland/admin",auth,(req,res)=>{
-    res.render("admin/dashboard.ejs")
+    res.render("admin.ejs")
 })
 
 server.get("/holyland/e-library",(req,res)=>{
     res.render("e-library.ejs")
 })
+
+// Route to display books to users
+server.get('/homepage',authen,async (req, res) => {
+
+});
+
+
+// Route to display a single book for reading
+server.get('/read/:id', authent,async (req, res) => {
+
+});
 
 
 server.get("/userregister",(req,res)=>{
@@ -173,26 +188,24 @@ server.post("/userregister", async (req, res) => {
     const confirm = req.body.confirm.trim();
     let errorMessage = null;
 
-    // Validate email and password
-    if (!emailRegex.test(email)) {
-        errorMessage = "Invalid email format.";
-    } else if (!passwordRegex.test(password)) {
-        errorMessage = "Password must be at least 8 characters long and contain at least one uppercase letter,one lowercase letter and one number.";
+    // Validate inputs
+    if (!username || !email || !password || !confirm) {
+        errorMessage = "Please fill in all fields.";
     } else if (password !== confirm) {
         errorMessage = "Passwords do not match.";
     } else {
-        const user = await client.db(process.env.DB_NAME).collection(db_table).findOne({ email: email });
+        const user = await client.db(db_table).collection(db_table).findOne({ email: email });
         if (user) {
             errorMessage = "Email already exists, please log in.";
         }
     }
+    // Render the registration form with error message if any
     if (errorMessage) {
         return res.render('userregister', { error: errorMessage });
     }
-
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const profile = { username: username,isAdmin:false, password: hashedPassword, email: email };
+        const profile = { username: username, isAdmin: false, password: hashedPassword, email: email };
         await client.db(process.env.DB_NAME).collection(db_table).insertOne(profile);
         return res.redirect('/homepage');
     } catch (error) {
@@ -200,240 +213,272 @@ server.post("/userregister", async (req, res) => {
         return res.status(500).send("Error during user registration");
     }
 });
+  
 
-
-
-//Home Page with Suggestions
-server.get('/homepage', auths,async (req, res) => {
-});
-
-// Search Page
-server.get('/search',authenticate, async (req, res) => {
-});
-
-// Server route for currently-reading books
-server.get('/currently-reading',authen,async (req, res) => {
-})
-
-// Want to Read Page
-server.get('/want-to-read',authent, async (req, res) => {
-});
-
-// Get all books from the database
-server.get('/admin/get-all-books', async (req, res) => {
-    try {
-        const allBooks = await client.db(process.env.DB_NAME).collection(db_table).find({}).toArray();
-        res.json(allBooks); // Respond with the list of all books as JSON
-        //console.log(allBooks);
-        
-    } catch (err) {
-        console.error('Error fetching all books:', err.message);
-        res.status(500).send('Error fetching all books');
+server.post('/add-to-want-to-read', async (req, res) => {
+    const userId = req.session.userId;
+    if (!userId) {
+        console.error('User ID not found in session');
+        return res.status(401).send('User not logged in.');
     }
-});
 
-//admin route
-// server.get("/admin/elibrary",(req,res)=>{
-//     res.render("admin_elibrary.ejs")
-// })
-
-
-// Admin Dashboard Route
-server.get('/admin/elibrary', async (req, res) => {
-    try {
-        const books = await client.db(process.env.DB_NAME).collection(process.env.DB_TABLE).find({}).toArray();
-        const users = await client.db(process.env.DB_NAME).collection(process.env.DB_TABLE)
-            .find({ username: { $exists: true, $ne: "" }, email: { $exists: true, $ne: "" } }) // Ensure username and email are not empty
-            .toArray();
-        res.render('admin_elibrary', { books, users, message: "" });
-    } catch (error) {
-        console.error('Error fetching data for admin:', error);
-        res.status(500).send('Error loading admin dashboard');
-    }
-});
-
-// Get Add New Book Form
-server.get('/admin/add', (req, res) => {
-    const message = req.query.message || null;
-    res.render('add', { message });
-});
-
-
-// POST route for adding a book
-server.post('/admin/add', async (req, res) => {
-    const newBook = {
-        volumeInfo: {
-            title: req.body.title,
-            authors: req.body.authors.split(',').map(author => author.trim()),
-            description: req.body.description,
-            imageLinks: { thumbnail: req.body.imageLink },
-            previewLink: req.body.previewLink
-        }
-    };
+    const bookId = req.body.bookId;
 
     try {
-        // Insert the new book into the database
-        const result = await client.db(process.env.DB_NAME).collection(db_table).insertOne(newBook);
-
-        if (result.insertedId) {
-            console.log('Book added successfully:', newBook.volumeInfo.title);  // Log success in the terminal
-
-            // Fetch the updated list of books to show on the page
-            const books = await client.db(process.env.DB_NAME).collection(db_table).find({}).toArray();
-            const message = "Book added successfully!";
-            res.render('admin_elibrary', { books, message });
-        } else {
-            console.log('Failed to add book.');
-            const books = await client.db(process.env.DB_NAME).collection(db_table).find({}).toArray();
-            const message = "Error adding the book.";
-            res.render('admin_elibrary', { books, message });
-        }
-    } catch (error) {
-        console.error('Error adding book:', error);
-        const books = await client.db(process.env.DB_NAME).collection(db_table).find({}).toArray();
-        const message = "Error adding the book.";
-        res.render('admin_elibrary', { books, message });
-    }
-});
-
-
-
-// Get Edit Form
-server.get('/admin/edit/:id', async (req, res) => {
-    const bookId = req.params.id;
-
-    try {
-        // Fetch the book by its ObjectId
-        const book = await client.db(process.env.DB_NAME).collection(db_table).findOne({ _id: new mongodb.ObjectId(bookId) });
-
-        if (!book) {
-            return res.status(404).send("Book not found");
-        }
-
-        // Render the edit page with the book data
-        res.render('edit', { book, message: null });
-    } catch (err) {
-        console.error('Error fetching book for edit:', err);
-        res.status(500).send("Error fetching book for edit");
-    }
-});
-
-
-
-// Update Book
-server.post('/admin/update/:id', async (req, res) => {
-    const bookId = new mongodb.ObjectId(req.params.id);  // Book ID for updating
-    const updatedBook = {
-        volumeInfo: {
-            title: req.body.title,
-            authors: req.body.authors.split(',').map(author => author.trim()),
-            description: req.body.description,
-            imageLinks: { thumbnail: req.body.imageLink },
-            previewLink: req.body.previewLink
-        }
-    };
-
-    try {
-        // Update the book in the database
-        const result = await client.db(process.env.DB_NAME).collection(db_table).updateOne(
-            { _id: bookId },
-            { $set: updatedBook }
+        // Add the book ID to the user's wishlist, ensuring it is unique
+        await client.db(process.env.DB_NAME).collection(db_table).updateOne(
+            { _id: new mongodb.ObjectId(userId) },
+            { $addToSet: { wishlist: new mongodb.ObjectId(bookId) } }, // Ensure book IDs are ObjectIds
+            { upsert: true } // Create the user document if it doesn't exist
         );
 
-        if (result.modifiedCount > 0) {
-            console.log(`Book with ID ${bookId} updated successfully`);  // Log success in the terminal
-
-            // Fetch the updated list of books to display
-            const books = await client.db(process.env.DB_NAME).collection(db_table).find({}).toArray();
-            const message = "Book updated successfully!";
-            res.render('admin_elibrary', { books, message });
-        } else {
-            console.log(`No changes made to the book with ID ${bookId}`);
-            const books = await client.db(process.env.DB_NAME).collection(db_table).find({}).toArray();
-            const message = "No changes were made to the book.";
-            res.render('admin_elibrary', { books, message });
-        }
+        res.redirect('/want-to-read');
     } catch (error) {
-        console.error('Error updating book:', error);
-        const books = await client.db(process.env.DB_NAME).collection(db_table).find({}).toArray();
-        const message = "Error updating the book.";
-        res.render('admin_elibrary', { books, message });
+        console.error('Error adding to wishlist:', error);
+        res.status(500).send('Failed to add to wishlist.');
     }
 });
-// Delete a book
-server.post('/admin/delete/:id', async (req, res) => {
+
+
+
+server.get('/want-to-read', aut,async (req, res) => {
+
+});
+
+server.post('/remove-from-want-to-read', async (req, res) => {
+    const userId = req.session.userId;
+    if (!userId) {
+        return res.status(401).send('User not logged in.');
+    }
+
+    const bookId = req.body.bookId;
+
+    try {
+        // Remove the book ID from the user's wishlist
+        await client.db(db_name).collection(db_table).updateOne(
+            { _id: new mongodb.ObjectId(userId) },
+            { $pull: { wishlist: new mongodb.ObjectId(bookId) } } // Remove book ID from wishlist
+        );
+
+        res.redirect('/want-to-read'); // Redirect back to the want-to-read page
+    } catch (error) {
+        console.error('Error removing from wishlist:', error);
+        res.status(500).send('Failed to remove from wishlist.');
+    }
+});
+
+
+
+
+server.get("/currently-reading", authenti,async (req, res) => {
+
+});
+
+
+server.get('/add-to-currently-reading/:id', async (req, res) => {
+    const bookId = req.params.id;
+    const userId = req.session.userId; // Assume user ID is stored in the session
+
+    if (!userId) {
+        return res.redirect('/login'); // Redirect to login if user is not logged in
+    }
+
+    try {
+        const user = await client.db(db_name).collection(db_table).findOne({ _id: new mongodb.ObjectId(userId) });
+        const currentlyReading = user?.currentlyReading || [];
+
+        // Add the book to the list if it's not already there
+        if (!currentlyReading.includes(bookId)) {
+            currentlyReading.push(bookId);
+
+            await client.db(db_name).collection(db_table).updateOne(
+                { _id: new mongodb.ObjectId(userId) },
+                { $set: { currentlyReading } }
+            );
+        }
+
+        res.redirect('/currently-reading');
+    } catch (err) {
+        console.error("Error adding book to currently reading:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+
+
+
+server.get('/remove-from-currently-reading/:id', async (req, res) => {
+    const bookId = req.params.id;
+    const userId = req.session.userId;
+
+    if (!userId) {
+        return res.redirect('/login');
+    }
+
+    try {
+        const user = await client.db(db_name).collection(db_table).findOne({ _id: new mongodb.ObjectId(userId) });
+        const currentlyReading = user?.currentlyReading || [];
+
+        const updatedList = currentlyReading.filter(id => id !== bookId);
+
+        await client.db(db_name).collection(db_table).updateOne(
+            { _id: new mongodb.ObjectId(userId) },
+            { $set: { currentlyReading: updatedList } }
+        );
+
+        res.redirect('/currently-reading');
+    } catch (err) {
+        console.error("Error removing book from currently reading:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+// Search books endpoint
+server.get('/search', authentic,async (req, res) => {
+
+});
+
+// Admin route to view all books with edit and delete options
+server.get('/admin/books',authenticate, async (req, res) => {
+
+});
+
+
+
+
+server.post('/admin/delete-book/:id', async (req, res) => {
     const bookId = req.params.id;
 
     try {
-        // Attempt to delete the book by its _id
-        const result = await client.db(process.env.DB_NAME).collection(db_table).deleteOne({ _id: new mongodb.ObjectId(bookId) });
+        await client.db(db_name).collection(db_table).deleteOne({ _id: new mongodb.ObjectId(bookId) });
 
-        if (result.deletedCount === 1) {
-            // Log success message to the terminal
-            console.log(`Book with ID ${bookId} deleted successfully`);
+        res.redirect('/admin/books'); 
+    } catch (err) {
+        console.error('Error deleting book:', err);
+        res.status(500).send('Failed to delete book.');
+    }
+});
 
-            // Fetch the updated list of books and pass success message
-            const books = await client.db(process.env.DB_NAME).collection(db_table).find({}).toArray();
-            const message = "Book deleted successfully!";
-            res.render('admin_elibrary', { books, message });
+
+// Route to display the add book form
+server.get('/admin/add-book', (req, res) => {
+    res.render('add-book');  // Render the add book form page
+});
+
+// Route to add a new book with validation
+server.post('/admin/add-book', upload.fields([{ name: 'Imgupload' }, { name: 'Pdfupload' }]), async (req, res) => {
+    const { title, author, description } = req.body;
+    const imagePath = req.files?.Imgupload[0]?.path;  // Image file path
+    const pdfPath = req.files?.Pdfupload[0]?.path;  // PDF file path
+
+    if (!title || !author || !description || !imagePath || !pdfPath) {
+        console.log('Missing required fields:', { title, author, description, imagePath, pdfPath });
+        return res.status(400).send('All fields, including image and PDF, are required.');
+    }
+
+    try {
+        // Upload the image to Cloudinary
+        const cloudinaryResult = await cloudinary.uploader.upload(imagePath, {
+            folder: "sample", 
+        });
+        console.log('Cloudinary image upload result:', cloudinaryResult);
+
+        
+        const pdfUrl = pdfPath;  // Store the file path for local storage or upload it to a cloud provider if needed.
+
+        // Save the new book to MongoDB
+        const newBook = {
+            title,
+            author,
+            description,
+            image: cloudinaryResult.secure_url,
+            pdf: pdfUrl,  // Local file path for PDF (or store URL if uploaded to cloud)
+            createdAt: new Date(),
+        };
+
+        console.log('Book to insert:', newBook);
+
+        await client.db(db_name).collection(db_table).insertOne(newBook);
+
+        //  delete the local files after processing
+        fs.unlinkSync(imagePath);  // Delete the image file after upload to Cloudinary
+        fs.unlinkSync(pdfPath);    // Delete the PDF file after saving to database
+
+        // Redirect to view books page
+                res.redirect('/admin/books');
+    } catch (error) {
+        console.error('Error adding book:', error);
+        res.status(500).send('Failed to add book. Please try again.');
+    }
+});
+
+server.get('/admin/edit-book/:id', async (req, res) => {
+    const bookId = req.params.id;
+
+    try {
+        const book = await client.db(db_name).collection(db_table).findOne({ _id: new mongodb.ObjectId(bookId) });
+        if (!book) return res.status(404).send('Book not found.');
+
+        res.render('editBook', { book });
+    } catch (err) {
+        console.error('Error fetching book for editing:', err);
+        res.status(500).send('Failed to load book for editing.');
+    }
+});
+
+
+
+server.post('/admin/edit-book/:id', upload.fields([{ name: 'Imgupload' }, { name: 'Pdfupload' }]), async (req, res) => {
+    const bookId = req.params.id;
+    const { title, author, description } = req.body;
+    const imagePath = req.files?.Imgupload ? req.files.Imgupload[0]?.path : null;
+    const pdfPath = req.files?.Pdfupload ? req.files.Pdfupload[0]?.path : null;
+
+    try {
+        // Fetch the existing book
+        const book = await client.db(db_name).collection(db_table).findOne({ _id: new mongodb.ObjectId(bookId) });
+        if (!book) return res.status(404).send('Book not found.');
+
+        let updatedFields = { title, author, description };
+
+        // If a new image is uploaded, replace it
+        if (imagePath) {
+            // Upload the new image to Cloudinary
+            const cloudinaryResult = await cloudinary.uploader.upload(imagePath, { folder: "sample" });
+            updatedFields.image = cloudinaryResult.secure_url;  // Save the new image URL
+
+            // Optionally delete old image from Cloudinary (if needed)
+            fs.unlinkSync(imagePath);  // Remove the uploaded local image file
         } else {
-            // Log failure if the book was not found
-            console.log(`No book found with ID ${bookId} to delete`);
-            const books = await client.db(process.env.DB_NAME).collection(db_table).find({}).toArray();
-            const message = "Book not found. Unable to delete.";
-            res.render('admin_elibrary', { books, message });
+            updatedFields.image = book.image; // Keep the old image if no new image is uploaded
         }
-    } catch (error) {
-        console.error('Error deleting book:', error);
-        const books = await client.db(process.env.DB_NAME).collection(db_table).find({}).toArray();
-        const message = "Error deleting the book.";
-        res.render('admin_elibrary', { books, message });
-    }
-});
 
-server.get("/admin/users/add",(req,res)=>{
-    res.render("add_user",{message: ""}) 
-})
+        // If a new PDF is uploaded, replace it
+        if (pdfPath) {
+            updatedFields.pdf = pdfPath; // Update with new local file path or uploaded URL
+            fs.unlinkSync(pdfPath); // Remove the uploaded local PDF file
+        } else {
+            updatedFields.pdf = book.pdf; // Keep the old PDF if not updated
+        }
 
+        // Update the book in the database
+        await client.db(db_name).collection(db_table).updateOne(
+            { _id: new mongodb.ObjectId(bookId) },
+            { $set: updatedFields }
+        );
 
-// Add a new user
-server.post('/admin/users/add', async (req, res) => {
-    const { username, email, password } = req.body;
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await client.db(process.env.DB_NAME).collection(process.env.DB_TABLE).insertOne({ username, email, password: hashedPassword });
-        console.log('User added successfully');
-        const books = await client.db(process.env.DB_NAME).collection(process.env.DB_TABLE).find({}).toArray();
-        const users = await client.db(process.env.DB_NAME).collection(process.env.DB_TABLE)
-            .find({ username: { $exists: true, $ne: "" }, email: { $exists: true, $ne: "" } })
-            .toArray();
-        res.render('add_user', { books, users, message: 'User added successfully!' });
-    } catch (error) {
-        console.error('Error adding user:', error);
-        res.status(500).send('Error adding user');
+        res.redirect('/admin/books');
+    } catch (err) {
+        console.error('Error updating book:', err);
+        res.status(500).send('Failed to update book.');
     }
 });
 
 
-// Delete a user
-server.post('/admin/users/delete/:id', async (req, res) => {
-    const userId = req.params.id;
-    try {
-        await client.db(process.env.DB_NAME).collection(process.env.DB_TABLE).deleteOne({ _id: new mongodb.ObjectId(userId) });
-        console.log('User deleted successfully');
-        const books = await client.db(process.env.DB_NAME).collection(process.env.DB_TABLE).find({}).toArray();
-        const users = await client.db(process.env.DB_NAME).collection(process.env.DB_TABLE)
-            .find({ username: { $exists: true, $ne: "" }, email: { $exists: true, $ne: "" } })
-            .toArray();
-        res.render('admin_elibrary', { books, users, message: 'User deleted successfully!' });
-    } catch (error) {
-        console.error('Error deleting user:', error);
-        res.status(500).send('Error deleting user');
-    }
-});
+
 
 //connect to the express server  
 server.listen(port,()=>{
     console.log(`server is listening on port ${port}`)
 
-})  
+}) 

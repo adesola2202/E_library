@@ -12,7 +12,7 @@
       href="/assets/img/kaiadmin/favicon.ico"
       type="image/x-icon"
     />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Fonts and icons -->
     <script src="/assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
@@ -50,10 +50,10 @@
           <div class="logo-header" data-background-color="dark">
             <a href="index.html" class="logo">
               <img
-                src="Holyland.jpeg"
+                src="/images/Schools.jpg"
                 alt="navbar brand"
                 class="navbar-brand"
-                height="20"
+                height="50"
               />
             </a>
             <div class="nav-toggle">
@@ -135,8 +135,10 @@
                     </li>
                     
                     <li>
-                      <a href="components/font-awesome-icons.html">
-                        <span class="sub-item"><a href="/admin/elibrary">E-library Management</a></span>
+                      <a href="components/font-awesome-icons.html" id="loadElibrary">
+                        <a href="#" id="eLibraryLink">
+                        <span class="sub-item"> E-library Management</span>
+                      </a>
                       </a>
                     </li>
                     <li>
@@ -329,6 +331,14 @@
 
       <div class="main-panel">
         <div class="main-header">
+          <div class="container-fluid">
+            <!-- <a href="#" class="navbar-brand">Admin Dashboard</a> -->
+          </div>
+
+          <div class="content">
+            <div id="mainContent">
+            </div>
+          </div>
           <div class="main-header-logo">
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="dark">
@@ -437,8 +447,8 @@
                               />
                             </div>
                             <div class="notif-content">
-                              <span class="subject">Jimmy Denis</span>
-                              <span class="block"> How are you ? </span>
+                              <span class="subject">Ola</span>
+                              <span class="block">Ola signed in </span>
                               <span class="time">5 minutes ago</span>
                             </div>
                           </a>
@@ -450,8 +460,8 @@
                               />
                             </div>
                             <div class="notif-content">
-                              <span class="subject">Chad</span>
-                              <span class="block"> Ok, Thanks ! </span>
+                              <span class="subject">Yemi</span>
+                              <span class="block"> Yemi Logged out </span>
                               <span class="time">12 minutes ago</span>
                             </div>
                           </a>
@@ -463,9 +473,9 @@
                               />
                             </div>
                             <div class="notif-content">
-                              <span class="subject">Jhon Doe</span>
+                              <span class="subject">John</span>
                               <span class="block">
-                                Ready for the meeting today...
+                                John sign in to library
                               </span>
                               <span class="time">12 minutes ago</span>
                             </div>
@@ -478,8 +488,8 @@
                               />
                             </div>
                             <div class="notif-content">
-                              <span class="subject">Talha</span>
-                              <span class="block"> Hi, Apa Kabar ? </span>
+                              <span class="subject">Tola</span>
+                              <span class="block"> Tola log out </span>
                               <span class="time">17 minutes ago</span>
                             </div>
                           </a>
@@ -547,7 +557,7 @@
                             </div>
                             <div class="notif-content">
                               <span class="block">
-                                Reza send messages to you
+                                yemi send messages to you
                               </span>
                               <span class="time">12 minutes ago</span>
                             </div>
@@ -555,10 +565,6 @@
                           <a href="#">
                             <div class="notif-icon notif-danger">
                               <i class="fa fa-heart"></i>
-                            </div>
-                            <div class="notif-content">
-                              <span class="block"> Farrah liked Admin </span>
-                              <span class="time">17 minutes ago</span>
                             </div>
                           </a>
                         </div>
@@ -659,14 +665,14 @@
                   >
                     <div class="avatar-sm">
                       <img
-                        src="/assets/img/profile.jpg"
+                        src="/images/myprofile.jpeg"
                         alt="..."
                         class="avatar-img rounded-circle"
                       />
                     </div>
                     <span class="profile-username">
                       <span class="op-7">Hi,</span>
-                      <span class="fw-bold">Hizrian</span>
+                      <span class="fw-bold">Abisoye</span>
                     </span>
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -681,8 +687,8 @@
                             />
                           </div>
                           <div class="u-text">
-                            <h4>Hizrian</h4>
-                            <p class="text-muted">hello@example.com</p>
+                            <h4>Abisoye</h4>
+                            <p class="text-muted">admin@gmail.com</p>
                             <a
                               href="profile.html"
                               class="btn btn-xs btn-secondary btn-sm"
@@ -699,7 +705,10 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#">Account Setting</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Logout</a>
+                        <form action="/logout" method="post" class="text-center">
+                          <button type="submit" id="logout-button" class="btn btn-danger btn-lg px-5 py-2 fw-bold">LOG OUT</button>
+                      </form>
+                      </form>
                       </li>
                     </div>
                   </ul>
@@ -811,141 +820,11 @@
             </div>
             
             <div class="row">
-              <div class="col-md-12">
-                <div class="card card-round">
-                  <div class="card-header">
-                    <div class="card-head-row card-tools-still-right">
-                      <h4 class="card-title">Users Geolocation</h4>
-                      <div class="card-tools">
-                        <button
-                          class="btn btn-icon btn-link btn-primary btn-xs"
-                        >
-                          <span class="fa fa-angle-down"></span>
-                        </button>
-                        <button
-                          class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"
-                        >
-                          <span class="fa fa-sync-alt"></span>
-                        </button>
-                        <button
-                          class="btn btn-icon btn-link btn-primary btn-xs"
-                        >
-                          <span class="fa fa-times"></span>
-                        </button>
-                      </div>
-                    </div>
-                    <p class="card-category">
-                      Map of the distribution of users around the world
-                    </p>
-                  </div>
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="table-responsive table-hover table-sales">
-                          <table class="table">
-                            <tbody>
-                              <tr>
-                                <td>
-                                  <div class="flag">
-                                    <img
-                                      src="/assets/img/flags/id.png"
-                                      alt="indonesia"
-                                    />
-                                  </div>
-                                </td>
-                                <td>Indonesia</td>
-                                <td class="text-end">2.320</td>
-                                <td class="text-end">42.18%</td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div class="flag">
-                                    <img
-                                      src="/assets/img/flags/us.png"
-                                      alt="united states"
-                                    />
-                                  </div>
-                                </td>
-                                <td>USA</td>
-                                <td class="text-end">240</td>
-                                <td class="text-end">4.36%</td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div class="flag">
-                                    <img
-                                      src="/assets/img/flags/au.png"
-                                      alt="australia"
-                                    />
-                                  </div>
-                                </td>
-                                <td>Australia</td>
-                                <td class="text-end">119</td>
-                                <td class="text-end">2.16%</td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div class="flag">
-                                    <img
-                                      src="/assets/img/flags/ru.png"
-                                      alt="russia"
-                                    />
-                                  </div>
-                                </td>
-                                <td>Russia</td>
-                                <td class="text-end">1.081</td>
-                                <td class="text-end">19.65%</td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div class="flag">
-                                    <img
-                                      src="/assets/img/flags/cn.png"
-                                      alt="china"
-                                    />
-                                  </div>
-                                </td>
-                                <td>China</td>
-                                <td class="text-end">1.100</td>
-                                <td class="text-end">20%</td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div class="flag">
-                                    <img
-                                      src="/assets/img/flags/br.png"
-                                      alt="brazil"
-                                    />
-                                  </div>
-                                </td>
-                                <td>Brasil</td>
-                                <td class="text-end">640</td>
-                                <td class="text-end">11.63%</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="mapcontainer">
-                          <div
-                            id="world-map"
-                            class="w-100"
-                            style="height: 300px"
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
               <div class="col-md-4">
                 <div class="card card-round">
                   <div class="card-body">
                     <div class="card-head-row card-tools-still-right">
-                      <div class="card-title">New Customers</div>
+                      <div class="card-title">New students</div>
                       <div class="card-tools">
                         <div class="dropdown">
                           <button
@@ -981,8 +860,8 @@
                           />
                         </div>
                         <div class="info-user ms-3">
-                          <div class="username">Jimmy Denis</div>
-                          <div class="status">Graphic Designer</div>
+                          <div class="username">Jimmy</div>
+                          <div class="status">Student</div>
                         </div>
                         <button class="btn btn-icon btn-link op-8 me-1">
                           <i class="far fa-envelope"></i>
@@ -999,8 +878,8 @@
                           >
                         </div>
                         <div class="info-user ms-3">
-                          <div class="username">Chandra Felix</div>
-                          <div class="status">Sales Promotion</div>
+                          <div class="username">Yewande</div>
+                          <div class="status">Student</div>
                         </div>
                         <button class="btn btn-icon btn-link op-8 me-1">
                           <i class="far fa-envelope"></i>
@@ -1018,8 +897,8 @@
                           />
                         </div>
                         <div class="info-user ms-3">
-                          <div class="username">Talha</div>
-                          <div class="status">Front End Designer</div>
+                          <div class="username">Mr John</div>
+                          <div class="status">Parent</div>
                         </div>
                         <button class="btn btn-icon btn-link op-8 me-1">
                           <i class="far fa-envelope"></i>
@@ -1037,8 +916,8 @@
                           />
                         </div>
                         <div class="info-user ms-3">
-                          <div class="username">Chad</div>
-                          <div class="status">CEO Zeleaf</div>
+                          <div class="username">Mr Femi</div>
+                          <div class="status">Parent</div>
                         </div>
                         <button class="btn btn-icon btn-link op-8 me-1">
                           <i class="far fa-envelope"></i>
@@ -1055,8 +934,8 @@
                           >
                         </div>
                         <div class="info-user ms-3">
-                          <div class="username">Hizrian</div>
-                          <div class="status">Web Designer</div>
+                          <div class="username">Hassan</div>
+                          <div class="status">Student</div>
                         </div>
                         <button class="btn btn-icon btn-link op-8 me-1">
                           <i class="far fa-envelope"></i>
@@ -1074,7 +953,7 @@
                         </div>
                         <div class="info-user ms-3">
                           <div class="username">Farrah</div>
-                          <div class="status">Marketing</div>
+                          <div class="status">Student</div>
                         </div>
                         <button class="btn btn-icon btn-link op-8 me-1">
                           <i class="far fa-envelope"></i>
@@ -1140,8 +1019,38 @@
                               </button>
                               Payment from #10231
                             </th>
-                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                            <td class="text-end">$250.00</td>
+                            <td class="text-end">Mar 19, 2024, 2.45pm</td>
+                            <td class="text-end">#250.00</td>
+                            <td class="text-end">
+                              <span class="badge badge-success">Completed</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">
+                              <button
+                                class="btn btn-icon btn-round btn-success btn-sm me-2"
+                              >
+                                <i class="fa fa-check"></i>
+                              </button>
+                              Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2024, 2.45pm</td>
+                            <td class="text-end">#250.00</td>
+                            <td class="text-end">
+                              <span class="badge badge-success">Completed</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">
+                              <button
+                                class="btn btn-icon btn-round btn-success btn-sm me-2"
+                              >
+                                <i class="fa fa-check"></i>
+                              </button>
+                              Payment from #10231
+                            </th>
+                            <td class="text-end">Mar 19, 2024, 2.45pm</td>
+                            <td class="text-end">#250.00</td>
                             <td class="text-end">
                               <span class="badge badge-success">Completed</span>
                             </td>
@@ -1156,7 +1065,7 @@
                               Payment from #10231
                             </th>
                             <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                            <td class="text-end">$250.00</td>
+                            <td class="text-end">#250.00</td>
                             <td class="text-end">
                               <span class="badge badge-success">Completed</span>
                             </td>
@@ -1170,8 +1079,8 @@
                               </button>
                               Payment from #10231
                             </th>
-                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                            <td class="text-end">$250.00</td>
+                            <td class="text-end">Mar 19, 2024, 2.45pm</td>
+                            <td class="text-end">#250.00</td>
                             <td class="text-end">
                               <span class="badge badge-success">Completed</span>
                             </td>
@@ -1185,8 +1094,8 @@
                               </button>
                               Payment from #10231
                             </th>
-                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                            <td class="text-end">$250.00</td>
+                            <td class="text-end">Mar 19, 2024, 2.45pm</td>
+                            <td class="text-end">#250.00</td>
                             <td class="text-end">
                               <span class="badge badge-success">Completed</span>
                             </td>
@@ -1200,38 +1109,8 @@
                               </button>
                               Payment from #10231
                             </th>
-                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                            <td class="text-end">$250.00</td>
-                            <td class="text-end">
-                              <span class="badge badge-success">Completed</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">
-                              <button
-                                class="btn btn-icon btn-round btn-success btn-sm me-2"
-                              >
-                                <i class="fa fa-check"></i>
-                              </button>
-                              Payment from #10231
-                            </th>
-                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                            <td class="text-end">$250.00</td>
-                            <td class="text-end">
-                              <span class="badge badge-success">Completed</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">
-                              <button
-                                class="btn btn-icon btn-round btn-success btn-sm me-2"
-                              >
-                                <i class="fa fa-check"></i>
-                              </button>
-                              Payment from #10231
-                            </th>
-                            <td class="text-end">Mar 19, 2020, 2.45pm</td>
-                            <td class="text-end">$250.00</td>
+                            <td class="text-end">Mar 19, 2024, 2.45pm</td>
+                            <td class="text-end">#250.00</td>
                             <td class="text-end">
                               <span class="badge badge-success">Completed</span>
                             </td>
@@ -1251,8 +1130,8 @@
             <nav class="pull-left">
               <ul class="nav">
                 <li class="nav-item">
-                  <a class="nav-link" href="http://www.saydotech.com">
-                    Saydotech
+                  <a class="nav-link" href="http://www.Abisoye.com">
+                    Abisoye
                   </a>
                 </li>
                 <li class="nav-item">
@@ -1265,7 +1144,7 @@
             </nav>
             <div class="copyright">
               2024, made with <i class="fa fa-heart heart text-danger"></i> by
-              <a href="http://www.saydotech.com">Saydotech</a>
+              <a href="">Abisoye</a>
             </div>
             <div>
               Distributed by
@@ -1507,6 +1386,7 @@
     <script src="/assets/js/setting-demo.js"></script>
     <script src="/assets/js/demo.js"></script>
     <script>
+
       $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
         type: "line",
         height: "70",
@@ -1535,5 +1415,6 @@
       });
     </script>
     <script src="/assets/dash.js"></script>
+    <script src="/js/dashboard.js"></script>
   </body>
 </html>

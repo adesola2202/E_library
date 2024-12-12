@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currently-reading</title>
+    <link rel="stylesheet" href="/css/currently.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>E-Library</h1>
+            <nav>
+                <ul>
+                    <li><a href="/homepage">Home</a></li>
+                    <li><a href="/currently-reading">Currently Reading</a></li>
+                    <li><a href="/want-to-read">Want to Read</a></li>
+                    <li><a href="/search">Search</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+    <h2>Your Currently Reading Books</h2>
+    <ul class="book-list">
+        <% books.forEach(book => { %>
+            <li class="book-item">
+                <img src="<%= book.image %>" alt="<%= book.title %>">
+                <div class="book-info">
+                    <h2><%= book.title %></h2>
+                    <p>Author: <%= book.author %></p>
+                    <p><%= book.description ? book.description.split(' ').slice(0, 10).join(' ') + '...' : 'No description available.' %></p>  
+                    <a href="/read/<%= book._id %>" class="btn">Read this book</a>
+                    <a href="/remove-from-currently-reading/<%= book._id %>" class="btn">Remove from Currently Reading</a>
+                </div>
+            </li>
+        <% }) %>
+    </ul>
+</body>
+</html>

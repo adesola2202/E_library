@@ -1,0 +1,148 @@
+[
+    {
+        "id":0,
+        "title":"A Good Name",
+        "author":"Yejide Kilanko",
+        "description":"A Good Name by Yejide Kilanko tells the story of Eziafa, a Nigerian immigrant in the U.S., and his struggles with an arranged marriage to Zina, a young woman with dreams of her own. Set against themes of tradition, identity, and the immigrant experience, the novel explores the tensions between cultural expectations and personal freedom.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731333119/a_good_name_img_maayjr.jpg",
+        "book_content":"/images/AGoodName.pdf"
+        
+    },
+
+    {
+        "id":1,
+        "title":"A Broken Peoples Playlist",
+        "author":"Chimenka Garricks",
+        "description":"A Broken People’s Playlist by Chimeka Garricks is a collection of interconnected short stories inspired by music, exploring love, loss, grief, and hope. Set in Port Harcourt, Nigeria, each story in the collection reflects the lives of characters grappling with heartbreak, redemption, and self-discovery. The playlist weaves together diverse voices and experiences, capturing the emotional complexity of human relationships and the resilience of the human spirit.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731333033/a_broken_peoiple_z39qdf.jpg",
+        "book_content": "/images/Broken.pdf"
+    },
+
+    {
+        "id":2,
+        "title":"Butter Honey Pig Bread",
+        "author":"Francesca Ekwuyasi",
+        "description":"Butter Honey Pig Bread by Francesca Ekwuyasi is a captivating novel that follows the intertwined lives of twin sisters Kehinde and Taiye, and their mother, Kambirinachi. Set across Nigeria, Canada, and the UK, the story explores themes of trauma, love, family, and healing. Through rich storytelling and vivid characters, Ekwuyasi delves into the complexities of forgiveness and the bonds that both bind and separate families",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731332981/honey_pig_butter_bread_zo433z.jpg",
+        "book_content":"/images/ButterHoneyPig.pdf"
+        
+    },
+
+    {
+        "id":3,
+        "title":"Sankofa",
+        "author":"Chibundu Onuzo",
+        "description":"Sankofa by Chibundu Onuzo tells the story of Anna, a British woman of mixed heritage who discovers her estranged father's identity after finding his journals. She embarks on a journey to West Africa to meet him, uncovering hidden aspects of her heritage and confronting questions of identity, belonging, and family. Through Anna’s journey, Onuzo explores the challenges and beauty of self-discovery and reconciliation across cultures and generations.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731333023/sankofa_img_npoxqx.jpg",
+        "book_content":"/images/Sankofa.pdf"
+    },
+
+    {
+        "id":4,
+        "title":"Adanna",
+        "author":"O’man Nwokedi, Adesuwa",
+        "description":"Adanna by O’man Nwokedi and Adesuwa is a heartfelt story that follows the life of Adanna, a young Nigerian woman navigating personal and societal expectations in her quest for self-identity and independence. Set against the rich cultural backdrop of Nigeria, the novel explores themes of love, family, tradition, and resilience, capturing Adanna's journey to forge her own path amidst challenges and changing dynamics. Through powerful storytelling, Nwokedi and Adesuwa highlight the strength found in self-acceptance and the courage to defy norms.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731332969/adanna_img_qqpqlc.jpg",
+        "book_content":"/images/Adanna.pdf"
+        
+    },
+
+
+    {
+        "id":5,
+        "title":"The Mechanics of Yenagoa",
+        "author":"Michael Afenfia",
+        "description":"The Mechanics of Yenagoa by Michael Afenfia is a vibrant, humorous novel set in Yenagoa, a bustling town in Nigeria's Niger Delta. The story centers on Ebinimi, a skilled but underappreciated mechanic, whose life is complicated by his unpredictable family, a series of eccentric customers, and the local political drama. Through witty prose and vivid character portrayals, Afenfia weaves a tale that explores themes of ambition, survival, and the impact of community, all while providing a lively snapshot of life in a small Nigerian town.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731333142/the_mechanics_of_yenagoa_fg2an3.jpg",
+        "book_content":"/images/TheMechanics.pdf"
+    },
+
+
+    {
+        "id":6,
+        "title":"The Marriage Class",
+        "author":"O’man Nwokedi",
+        "description":"*The Marriage Class* by O’man Nwokedi is a thought-provoking novel that follows a group of Nigerian couples enrolled in a marriage counseling class. As they confront their personal struggles, secrets, and aspirations, the couples face challenges that test their love, resilience, and commitment. Through the perspectives of diverse characters, Nwokedi explores themes of love, societal expectations, and the complexities of modern relationships, painting a nuanced picture of marriage in contemporary Nigerian society.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731333128/The_marriage_class_m0dvdr.jpg",
+        "book_content":"/images/ TheMarriageClass.pdf"
+    },
+
+
+    {
+        "id":7,
+        "title":"Layla",
+        "author":"Collen Hover",
+        "description":"*Layla* by Colleen Hoover is a suspenseful and emotional novel that blends romance with elements of the supernatural. The story follows Leeds, who falls deeply in love with Layla, only to have their relationship shattered by a traumatic incident. In an attempt to rekindle their love, they retreat to a remote bed-and-breakfast, where strange and inexplicable occurrences begin to unfold. As Leeds confronts unsettling truths and mysterious forces, he’s forced to make difficult choices about love, loyalty, and survival. Hoover masterfully combines romance and mystery, keeping readers on edge until the very last page.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731332934/layla_a0cgbi.jpg",
+        "book_content":"/images/Layla.pdf"
+    },
+
+
+    {
+        "id":8,
+        "title":"Only Big Bum Bum Matters Tomorrow",
+        "author":"Damilare Kuku",
+        "description":"*Only Big Bum Bum Matters Tomorrow* by Damilare Kuku is a bold and witty exploration of contemporary Nigerian society, centered around themes of ambition, desire, and societal expectations. With humor and keen insight, Kuku delves into the lives of vibrant characters who navigate love, relationships, and the pressures of success in a culture that often prioritizes appearances and status. Through sharp storytelling, the novel highlights the complexities of identity and self-worth in a world that can be both absurd and deeply relatable.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731333015/only_big_bumbum_img_kbp70h.jpg",
+        "book_content":"/images/Only.pdf"
+        
+    },
+
+    {
+        "id":9,
+        "title":"Purple Hibiscus",
+        "author":"Chimamanda Ngozi Adichie",
+        "description":"*Purple Hibiscus* by Chimamanda Ngozi Adichie is a powerful coming-of-age novel set in postcolonial Nigeria. It follows fifteen-year-old Kambili, whose life is controlled by her strict and devout father, Eugene. Through a visit to her aunt’s home, Kambili experiences freedom, love, and self-discovery for the first time. Adichie masterfully explores themes of family, faith, oppression, and the search for identity against the backdrop of Nigeria’s political turmoil, crafting a poignant story about resilience and the transformative power of hope.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731333733/purple_x0jdb0.jpg",
+        "book_content":"/images/Purple_Hibiscus.pdf"
+    },
+
+    {
+        "id":10,
+        "title":"The Marriage Clock",
+        "author":"Zara Raheem",
+        "description":"*The Marriage Clock* by Zara Raheem is a humorous and heartwarming novel about Leila Abid, a young American-Muslim woman whose parents give her three months to find a suitable husband, or they'll arrange a marriage for her. As Leila embarks on a whirlwind quest to find her perfect match, she confronts cultural expectations, personal desires, and the realities of modern dating. Raheem’s debut novel captures the struggles of balancing tradition and independence, and the universal quest for love, with wit and insight into family dynamics and self-discovery.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731332945/marraiage_clock_lepahy.jpg",
+        "book_content":"/images/The_Marriage_Clock.pdf"
+        
+    },
+
+    {
+        "id": 11,
+        "title":"Arsene Lupin VS Sherlock Holmes",
+        "author":"Maurice Leblance",
+        "description":"*Arsène Lupin vs. Sherlock Holmes* by Maurice Leblanc is a thrilling novel that pits the legendary French gentleman thief, Arsène Lupin, against the brilliant British detective, Sherlock Holmes. In this classic tale, Lupin challenges Holmes with a series of intricate heists, leaving the detective to unravel the mystery of the master thief's cunning schemes. The story is filled with clever twists, high-stakes encounters, and a battle of wits between two of the most iconic characters in detective literature.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731673890/WhatsApp_Image_2024-11-15_at_13.28.53_62a81c12_cpbvdo.jpg",
+        "book_content":"/images/Arsene_Lupin.pdf"
+        
+    },
+
+    {
+        "id":12,
+        "title":"The Secret Life Of Baba Segi's Wives",
+        "author":" Lola Shoneyin",
+        "description":"*The Secret Life of Baba Segi's Wives* by Lola Shoneyin is a gripping and humorous novel that delves into the complexities of polygamy in contemporary Nigeria. The story revolves around Baba Segi, a wealthy man with four wives, and the dynamics within his household. When his fourth wife, the young and educated Bolanle, enters the family, tensions rise as secrets, jealousy, and power struggles unfold. Through the voices of the wives, Shoneyin explores themes of love, rivalry, betrayal, and the impact of societal expectations, offering a sharp and insightful critique of gender and power in African society.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731673867/WhatsApp_Image_2024-11-15_at_13.29.43_f9a4989b_kk0vpb.jpg",
+        "book_content":"/images/the_Secret.pdf"
+    },
+
+    
+    {
+        "id":13,
+        "title":"Ake: The Years Of Childhood",
+        "author":"Wole Soyinka",
+        "description":"*Ake: The Years of Childhood* by Wole Soyinka is a memoir that vividly recounts the Nobel laureate's early years growing up in Nigeria. Set against the backdrop of colonialism and the vibrant culture of Western Nigeria, Soyinka reflects on his childhood experiences, his education, and the complex dynamics of family life. With a blend of humor, nostalgia, and sharp social commentary, Soyinka paints a rich portrait of a young boy’s coming-of-age, offering readers an intimate glimpse into the roots of his identity and the formative years that shaped his later work.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731673874/WhatsApp_Image_2024-11-15_at_13.29.25_f4bfe685_jpwybe.jpg",
+        "book_content":"/images/Ake.pdf"
+    },
+
+    
+    {
+        "id":14,
+        "title":"You Made A Fool Of Death With Your Beauty",
+        "author":"Akwaeka Emezi",
+        "description":"*You Made a Fool of Death with Your Beauty* by Akwaeke Emezi is a poignant and evocative novel that explores love, loss, and the journey of healing. The story follows Feyi Adekola, a young artist trying to rebuild her life after a tragic loss. As she navigates new relationships and daring choices, she faces unexpected challenges and forbidden desires that force her to confront her past and her future. Emezi’s novel blends romance with deep emotional insight, capturing the complexities of grief and the courage it takes to embrace life and love again.",
+        "image":"https://res.cloudinary.com/ddknoqicv/image/upload/v1731333150/you_made_a_fool_img_dvuehb.jpg",
+        "book_content":"/images/You_made.pdf"
+    }
+]

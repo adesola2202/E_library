@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read <%= book.title %></title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <link rel="stylesheet" href="/public/css/readBook.css">
+</head>
+<body>
+    <header>
+        <h1>Reading: <%= book.title %></h1>
+        <h3>Author: <%= book.author %></h3>
+    </header>
+
+    <div id="pdf-container">
+        <!-- PDF content will be loaded here -->
+    </div>
+
+    <!-- Progress Bar -->
+    <div id="progress-bar-container">
+        <div id="progress-bar"></div>
+    </div>
+    <div id="progress-text">
+        <span id="progress-percent">0%</span>
+    </div>
+
+    <!-- Audio control buttons -->
+    <div id="audio-controls">
+        <button id="start-reading">Start Reading</button>
+        <button id="pause-reading">Pause</button>
+        <button id="stop-reading">Stop</button>
+    </div>
+
+    <div id="controls">
+        <button id="prev-page">Previous Page</button>
+        <span>Page: <span id="page-num"></span> / <span id="page-count"></span></span>
+        <button id="next-page">Next Page</button>
+        <a href="/homepage" class="button">back to home page</a>
+    </div>
+
+    <footer>
+        <p>&copy; Eloy</p>
+    </footer>
+
+    <script>
+        const pdfUrl = "<%= book.book_content %>";
+        let pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null;
+        let speechSynthesis = window.speechSynthesis;
+        let currentUtterance = null;
+
+        // Initialize PDF.js and load PDF
+        pdfjsLib.getDocument(pdfUrl).promise.then(pdfDoc_ => {
+            pdfDoc = pdfDoc_;
+            document.getElementById('page-count').textContent = pdfDoc.numPages;
+            renderPage(pageNum);
+        });
+
+        // Render a given page
+// Render a given page
+function renderPage(num) {
+    pageRendering = true;
+    pdfDoc.getPage(num).then(page => {
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        const pdfContainer = document.getElementById("pdf-container");
+        pdfContainer.innerHTML = ""; // Clear previous page
+        pdfContainer.appendChild(canvas);
+
+        const renderTask = page.render({ canvasContext: ctx, viewport: viewport });
+        renderTask.promise.then(() => {
+            pageRendering = false;
+            if (pageNumPending !== null) {
+                renderPage(pageNumPending);
+                pageNumPending = null;
+            }
+        });
+
+        document.getElementById('page-num').textContent = num;
+
+        // Update progress bar and percentage
+        const progress = (num / pdfDoc.numPages) * 100;
+        document.getElementById('progress-bar').style.width = `${progress}%`;
+
+        // Check if it's the last page, and change progress text accordingly
+        if (num === pdfDoc.numPages) {
+            document.getElementById('progress-percent').textContent = "Completed";
+        } else {
+            document.getElementById('progress-percent').textContent = `${Math.round(progress)}%`;
+        }
+
+        // Extract text content of the page for speech synthesis
+        page.getTextContent().then(textContent => {
+            const pageText = textContent.items.map(item => item.str).join(' ');
+            if (currentUtterance) {
+                currentUtterance.text = pageText;
+            }
+        });
+    });
+}
+
+
+        // Control Speech Synthesis
+        function startReading() {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.resume();
+            } else {
+                const utterance = new SpeechSynthesisUtterance();
+                utterance.text = "Loading content...";  // Default text while loading
+                speechSynthesis.speak(utterance);
+
+                // Wait until page is rendered and then start reading
+                pdfDoc.getPage(pageNum).then(page => {
+                    page.getTextContent().then(textContent => {
+                        const pageText = textContent.items.map(item => item.str).join(' ');
+                        const utterance = new SpeechSynthesisUtterance(pageText);
+                        speechSynthesis.speak(utterance);
+                        currentUtterance = utterance;
+                    });
+                });
+            }
+        }
+
+        function pauseReading() {
+            speechSynthesis.pause();
+        }
+
+        function stopReading() {
+            speechSynthesis.cancel();
+        }
+
+        // Event Listeners for Control Buttons
+        document.getElementById("start-reading").addEventListener("click", startReading);
+        document.getElementById("pause-reading").addEventListener("click", pauseReading);
+        document.getElementById("stop-reading").addEventListener("click", stopReading);
+
+        // Page navigation controls
+        document.getElementById("prev-page").addEventListener("click", () => {
+            if (pageNum <= 1) return;
+            pageNum--;
+            renderPage(pageNum);
+        });
+
+        document.getElementById("next-page").addEventListener("click", () => {
+            if (pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            renderPage(pageNum);
+        });
+
+    </script>
+</body>
+</html>

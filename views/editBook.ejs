@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Book</title>
+    <link rel="stylesheet" href="/css/editBook.css">
+</head>
+<body>
+    <form action="/admin/edit-book/<%= book._id %>" method="POST" enctype="multipart/form-data">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" value="<%= book.title %>" required>
+    
+        <label for="author">Author</label>
+        <input type="text" id="author" name="author" value="<%= book.author %>" required>
+    
+        <label for="description">Description</label>
+        <textarea id="description" name="description" required><%= book.description %></textarea>
+    
+        <!-- Display image preview if the book has an image -->
+        <% if (book.image) { %>
+            <label>Current Image:</label>
+            <img src="<%= book.image %>" alt="Book Image" style="max-width: 200px; margin-top: 10px;">
+        <% } %>
+    
+        <label for="Imgupload">Change Image</label>
+        <input type="file" id="Imgupload" name="Imgupload">
+
+         <!-- Image Preview Before Upload -->
+         <img id="image-preview" style="max-width: 200px; margin-top: 10px; display: none;" alt="Image Preview">
+    
+        <label for="Pdfupload">Change PDF</label>
+        <input type="file" id="Pdfupload" name="Pdfupload">
+    
+        <button type="submit" id="update-btn">Update Book</button>
+    </form>
+
+    <script>
+        // Handle Image Preview
+        document.querySelector('#Imgupload').addEventListener('change', function(event) {
+            const file = event.target.files[0];  // Get the selected file
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                // Set the preview image to the selected file
+                const preview = document.getElementById('image-preview');
+                preview.src = e.target.result;
+                preview.style.display = 'block';  // Show the image preview
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);  // Read the file as a data URL
+            }
+        });    
+    </script>
+</body>
+</html>

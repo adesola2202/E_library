@@ -1,0 +1,140 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f9fafc;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    overflow: auto; /* Ensures scrolling is allowed */
+}
+
+/* Form Container */
+form {
+    background: #ffffff;
+    width: 500px;
+    padding: 25px 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px; /* Provides some spacing if the form is taller than the viewport */
+}
+
+/* Form Header */
+form h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #1f2937;
+    text-align: center;
+}
+
+/* Labels */
+form label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #4b5563;
+    margin-bottom: 4px;
+}
+
+/* Inputs and Textarea */
+form input[type="text"],
+form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    background: #f9fafb;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form textarea:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
+    outline: none;
+}
+
+/* File Inputs */
+form input[type="file"] {
+    font-size: 0.9rem;
+    color: #4f46e5;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+form input[type="file"]::file-selector-button {
+    padding: 8px 16px;
+    border: 1px solid #6366f1;
+    border-radius: 8px;
+    background-color: #6366f1;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form input[type="file"]::file-selector-button:hover {
+    background-color: #4f46e5;
+}
+
+/* Textarea */
+form textarea {
+    resize: none;
+    height: 80px;
+}
+
+/* Submit Button */
+form button {
+    padding: 12px 20px;
+    background-color: #6366f1;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+form button:hover {
+    background-color: #4f46e5;
+    transform: translateY(-2px);
+}
+
+form button:active {
+    transform: translateY(0);
+}
+
+
+/* Centering for Small Screens */
+@media (max-height: 700px) {
+    form {
+        margin-top: 10px;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    form {
+        width: 90%;
+        padding: 20px;
+    }
+
+    form h1 {
+        font-size: 1.5rem;
+    }
+}
