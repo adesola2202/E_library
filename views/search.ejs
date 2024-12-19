@@ -41,6 +41,16 @@
                             <span class="description-full" style="display: none;"><%= book.description %></span>
                             <a href="#" class="read-more">Read More</a>
                             <a href="#" class="read-less" style="display: none;">Read Less</a>
+                            
+                            <div class="button-container">
+                                <!-- Buttons for adding to 'Want to Read' and 'Read Book' -->
+                                <form action="/add-to-want-to-read" method="POST" onsubmit="handleAddToWantToRead(event)">
+                                    <input type="hidden" name="bookId" value="<%= book._id %>">
+                                    <button type="submit" class="btn-add">Add to Want to Read</button>
+                                </form>
+                            </div>
+
+                            <a href="/add-to-currently-reading/<%= book._id %>" class="btn-read">Read Book</a>
                         </div>
                     </li>
                 <% }) %>

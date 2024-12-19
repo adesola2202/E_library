@@ -11,6 +11,8 @@ const path = require("path")
 const cookieParser = require("cookie-parser") 
 const bodyParser = require("body-parser")
 const session = require("express-session")
+const { v4: uuidv4 } = require('uuid');
+const sanitizeHtml = require('sanitize-html');
 const auth = require("./model/authorise")
 const authenticate = require("./model/admi")
 const authent= require("./model/read") 
@@ -31,7 +33,6 @@ server.use(
 )
 // use middleware
 server.use(cookieParser())
-server.use(express.json())
 server.use(express.static(path.join(__dirname,"public/")))
 server.use(cors())
 server.use(bodyParser.urlencoded({extended:true}))// allows nested object in the request body
@@ -54,7 +55,7 @@ cloudinary.config({
 })
 
 //multer
-const img = path.join(__dirname,'public/images/uploaded')
+const img = path.join(__dirname, 'public/images/uploaded')
 const storage = multer.diskStorage({
     destination:(req,file,callback)=>{
         callback(null,img)
@@ -85,7 +86,7 @@ connectToDatabase();
 
 // Login route
 server.get("/login",(req,res)=>{
-    res.render("login.ejs",{message:null})
+    res.render("login.ejs", {message:null})
 })
 
 server.post("/login", async (req, res) => {
@@ -344,8 +345,6 @@ server.get('/admin/books',authenticate, async (req, res) => {
 });
 
 
-
-
 server.post('/admin/delete-book/:id', async (req, res) => {
     const bookId = req.params.id;
 
@@ -367,6 +366,8 @@ server.get('/admin/add-book', (req, res) => {
 
 // Route to add a new book with validation
 server.post('/admin/add-book', upload.fields([{ name: 'Imgupload' }, { name: 'Pdfupload' }]), async (req, res) => {
+    
+
     const { title, author, description } = req.body;
     const imagePath = req.files?.Imgupload[0]?.path;  // Image file path
     const pdfPath = req.files?.Pdfupload[0]?.path;  // PDF file path
@@ -375,6 +376,13 @@ server.post('/admin/add-book', upload.fields([{ name: 'Imgupload' }, { name: 'Pd
         console.log('Missing required fields:', { title, author, description, imagePath, pdfPath });
         return res.status(400).send('All fields, including image and PDF, are required.');
     }
+    const sanitizedDescription = sanitizeHtml(description, {
+        allowedTags: [ 'p', 'a', 'strong', 'em', 'ul', 'ol', 'li', 'br' ],
+        allowedAttributes: {
+            a: [ 'href' ]
+        }
+    });
+    console.log('Sanitized Description:', sanitizedDescription); 
 
     try {
         // Upload the image to Cloudinary
@@ -384,25 +392,29 @@ server.post('/admin/add-book', upload.fields([{ name: 'Imgupload' }, { name: 'Pd
         console.log('Cloudinary image upload result:', cloudinaryResult);
 
         
-        const pdfUrl = pdfPath;  // Store the file path for local storage or upload it to a cloud provider if needed.
+        // Dynamically generate the relative path for the PDF
+        const pdfFileName = path.basename(pdfPath); // Extract file name (e.g., Sass.pdf)
+        const pdfRelativePath = path.join('/images/uploaded', pdfFileName).replace(/\\+/g, '/');  // Ensure forward slashes
+
 
         // Save the new book to MongoDB
         const newBook = {
             title,
             author,
-            description,
+            description: sanitizedDescription,
             image: cloudinaryResult.secure_url,
-            pdf: pdfUrl,  // Local file path for PDF (or store URL if uploaded to cloud)
+            book_content: pdfRelativePath,  // Save the dynamic relative path
             createdAt: new Date(),
         };
 
         console.log('Book to insert:', newBook);
 
         await client.db(db_name).collection(db_table).insertOne(newBook);
+        console.log("Book added successfully:", newBook);
 
         //  delete the local files after processing
         fs.unlinkSync(imagePath);  // Delete the image file after upload to Cloudinary
-        fs.unlinkSync(pdfPath);    // Delete the PDF file after saving to database
+        //fs.unlinkSync(pdfPath);    // Delete the PDF file after saving to database
 
         // Redirect to view books page
                 res.redirect('/admin/books');
@@ -411,6 +423,9 @@ server.post('/admin/add-book', upload.fields([{ name: 'Imgupload' }, { name: 'Pd
         res.status(500).send('Failed to add book. Please try again.');
     }
 });
+
+
+
 
 server.get('/admin/edit-book/:id', async (req, res) => {
     const bookId = req.params.id;

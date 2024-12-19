@@ -178,6 +178,66 @@ strong {
     line-height: 1.5;
 }
 
+/* Container for buttons to make them align side by side */
+.button-container {
+    display: flex;
+    gap: 10px; /* Adjust space between the buttons */
+    justify-content: center; /* Optionally, center them */
+    margin-top: 15px; /* Adjust top margin if needed */
+}
+
+/* General button styling */
+.btn-add, .btn-read {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 1rem;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    width: auto;  /* Ensure the buttons have natural width */
+    flex-shrink: 0; /* Prevent buttons from shrinking */
+}
+
+/* 'Add to Want to Read' button styling */
+.btn-add {
+    background-color: #3498db;
+}
+
+.btn-add:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.btn-add:active {
+    background-color: #21618c;
+    transform: translateY(1px);
+}
+
+/* 'Read Book' button styling */
+.btn-read {
+    background-color: #e74c3c;
+}
+
+.btn-read:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+.btn-read:active {
+    background-color: #b03a2e;
+    transform: translateY(1px);
+}
+
+/* Focus effects for accessibility */
+.btn-add:focus, .btn-read:focus {
+    outline: none;
+}
+
+
 /* Responsive Adjustments for Small Screens */
 @media (max-width: 768px) {
     header h1 {

@@ -1,3 +1,4 @@
+/* General page styling */
 * {
     margin: 0;
     padding: 0;
@@ -9,7 +10,7 @@ body {
     line-height: 1.6;
     background-color: #f9f9f9;
     color: #333;
-    font-size: 1rem; 
+    font-size: 1rem;
 }
 
 /* Header */
@@ -48,6 +49,63 @@ nav ul li a:hover {
     color: #e74c3c;
 }
 
+/* Top-right corner buttons */
+.top-buttons {
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Login as Admin button styling */
+.btn-login {
+    background-color: #007bff;
+    color: white;
+    padding: 7px 15px;
+    text-decoration: none;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.btn-login:active {
+    background-color: #004085;
+    transform: translateY(2px);
+}
+
+/* Log Out button styling */
+#logout-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#logout-button:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+#logout-button:active {
+    background-color: #c0392b;
+    transform: translateY(1px);  /* Button pressed effect */
+}
+
+#logout-button:focus {
+    outline: none;
+}
+
 /* Intro Section */
 #intro {
     background: url('/images/e-library background.jpg') no-repeat center center/cover;
@@ -78,6 +136,11 @@ nav ul li a:hover {
 
 #intro .btn:hover {
     background-color: #c0392b;
+}
+
+#intro .btn:active {
+    background-color: #c0392b;
+    transform: translateY(1px);  /* Button pressed effect */
 }
 
 /* Book List Styles */
@@ -148,12 +211,14 @@ nav ul li a:hover {
 
 .read-more:hover {
     background-color: rgb(33, 33, 253);
-    color:#fefefe;
+    color: #fefefe;
     transform: translateY(-2px);
 }
 
-.read-more:focus {
-    outline: none;
+.read-more:active {
+    background-color: rgb(33, 33, 253);
+    color: #fefefe;
+    transform: translateY(1px);  /* Button pressed effect */
 }
 
 /* "Read this book" Button */
@@ -172,6 +237,11 @@ nav ul li a:hover {
 
 .btn:hover {
     background-color: #16a085;
+}
+
+.btn:active {
+    background-color: #16a085;
+    transform: translateY(1px);  /* Button pressed effect */
 }
 
 /* Modal styles */
@@ -198,10 +268,10 @@ nav ul li a:hover {
 }
 
 .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
 }
 
 .close:hover,
@@ -210,35 +280,6 @@ nav ul li a:hover {
     text-decoration: none;
     cursor: pointer;
 }
-
-/* Style and position the logout button */
-#logout-form {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 1000; /* Ensure it stays on top */
-}
-
-#logout-button {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-#logout-button:hover {
-    background-color: #c0392b;
-    transform: translateY(-2px);
-}
-
-#logout-button:focus {
-    outline: none;
-}
-
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
@@ -332,31 +373,6 @@ nav ul li a:hover {
 
 @media (max-width: 480px) {
     /* Tighter spacing for very small devices */
-    header h1 {
-        font-size: 1.5rem;
-    }
-
-    nav ul {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    nav ul li {
-        margin: 5px 0;
-    }
-
-    #intro {
-        padding: 2rem 1rem;
-    }
-
-    #intro h2 {
-        font-size: 1.2rem;
-    }
-
-    #intro p {
-        font-size: 0.8rem;
-    }
-
     .book-info h2 {
         font-size: 1rem;
     }
@@ -367,24 +383,14 @@ nav ul li a:hover {
 
     .btn, .read-more {
         font-size: 0.8rem;
-        padding: 6px 10px;
+        padding: 7px 10px;
     }
 
-    .modal-content {
-        width: 95%;
+    .library-container {
+        padding: 3px;
     }
 
     .book-item img {
         width: 100%;
     }
-
-    #logout-button {
-        font-size: 0.8rem;
-        padding: 6px 10px;
-    }
 }
-
-
-
-
-

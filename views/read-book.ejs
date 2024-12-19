@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Read <%= book.title %></title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
-    <link rel="stylesheet" href="/public/css/readBook.css">
+    <link rel="stylesheet" href="/css/readBook.css">
 </head>
 <body>
     <header>
@@ -20,6 +20,7 @@
     <!-- Progress Bar -->
     <div id="progress-bar-container">
         <div id="progress-bar"></div>
+        <div id="draggable" class="draggable"></div> <!-- The draggable handle -->
     </div>
     <div id="progress-text">
         <span id="progress-percent">0%</span>
@@ -32,11 +33,19 @@
         <button id="stop-reading">Stop</button>
     </div>
 
+    <!-- Speed control buttons -->
+    <div id="speed-controls">
+        <button id="decrease-speed">- Speed</button>
+        <span id="current-speed">1x</span>
+        <button id="increase-speed">+ Speed</button>
+    </div>
+
     <div id="controls">
         <button id="prev-page">Previous Page</button>
         <span>Page: <span id="page-num"></span> / <span id="page-count"></span></span>
         <button id="next-page">Next Page</button>
-        <a href="/homepage" class="button">back to home page</a>
+        <a href="/currently-reading" class="btn-homepage">Back to Currently Reading</a>
+
     </div>
 
     <footer>
@@ -48,6 +57,7 @@
         let pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null;
         let speechSynthesis = window.speechSynthesis;
         let currentUtterance = null;
+        let speechRate = 1; // Default speech rate
 
         // Initialize PDF.js and load PDF
         pdfjsLib.getDocument(pdfUrl).promise.then(pdfDoc_ => {
@@ -57,67 +67,61 @@
         });
 
         // Render a given page
-// Render a given page
-function renderPage(num) {
-    pageRendering = true;
-    pdfDoc.getPage(num).then(page => {
-        const viewport = page.getViewport({ scale: 1.5 });
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(page => {
+                const viewport = page.getViewport({ scale: 1.5 });
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
 
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-        const pdfContainer = document.getElementById("pdf-container");
-        pdfContainer.innerHTML = ""; // Clear previous page
-        pdfContainer.appendChild(canvas);
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                const pdfContainer = document.getElementById("pdf-container");
+                pdfContainer.innerHTML = ""; // Clear previous page
+                pdfContainer.appendChild(canvas);
 
-        const renderTask = page.render({ canvasContext: ctx, viewport: viewport });
-        renderTask.promise.then(() => {
-            pageRendering = false;
-            if (pageNumPending !== null) {
-                renderPage(pageNumPending);
-                pageNumPending = null;
-            }
-        });
+                const renderTask = page.render({ canvasContext: ctx, viewport: viewport });
+                renderTask.promise.then(() => {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
 
-        document.getElementById('page-num').textContent = num;
+                document.getElementById('page-num').textContent = num;
 
-        // Update progress bar and percentage
-        const progress = (num / pdfDoc.numPages) * 100;
-        document.getElementById('progress-bar').style.width = `${progress}%`;
+                // Update progress bar and percentage
+                const progress = (num / pdfDoc.numPages) * 100;
+                document.getElementById('progress-bar').style.width = `${progress}%`;
 
-        // Check if it's the last page, and change progress text accordingly
-        if (num === pdfDoc.numPages) {
-            document.getElementById('progress-percent').textContent = "Completed";
-        } else {
-            document.getElementById('progress-percent').textContent = `${Math.round(progress)}%`;
+                // Check if it's the last page, and change progress text accordingly
+                if (num === pdfDoc.numPages) {
+                    document.getElementById('progress-percent').textContent = "Completed";
+                } else {
+                    document.getElementById('progress-percent').textContent = `${Math.round(progress)}%`;
+                }
+
+                // Extract text content of the page for speech synthesis
+                page.getTextContent().then(textContent => {
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    if (currentUtterance) {
+                        currentUtterance.text = pageText;
+                    }
+                });
+            });
         }
-
-        // Extract text content of the page for speech synthesis
-        page.getTextContent().then(textContent => {
-            const pageText = textContent.items.map(item => item.str).join(' ');
-            if (currentUtterance) {
-                currentUtterance.text = pageText;
-            }
-        });
-    });
-}
-
 
         // Control Speech Synthesis
         function startReading() {
             if (speechSynthesis.speaking) {
                 speechSynthesis.resume();
             } else {
-                const utterance = new SpeechSynthesisUtterance();
-                utterance.text = "Loading content...";  // Default text while loading
-                speechSynthesis.speak(utterance);
-
-                // Wait until page is rendered and then start reading
                 pdfDoc.getPage(pageNum).then(page => {
                     page.getTextContent().then(textContent => {
                         const pageText = textContent.items.map(item => item.str).join(' ');
                         const utterance = new SpeechSynthesisUtterance(pageText);
+                        utterance.rate = speechRate; // Use the current speech rate
                         speechSynthesis.speak(utterance);
                         currentUtterance = utterance;
                     });
@@ -133,10 +137,27 @@ function renderPage(num) {
             speechSynthesis.cancel();
         }
 
-        // Event Listeners for Control Buttons
+        // Adjust speech speed
+        function adjustSpeechSpeed(increase) {
+            speechRate = increase ? Math.min(speechRate + 0.1, 2) : Math.max(speechRate - 0.1, 0.5);
+            speechRate = Math.round(speechRate * 10) / 10; // Round to one decimal place
+            document.getElementById("current-speed").textContent = `${speechRate}x`;
+
+            if (currentUtterance) {
+                currentUtterance.rate = speechRate; // Update rate of current utterance
+                if (speechSynthesis.speaking && !speechSynthesis.paused) {
+                    speechSynthesis.cancel(); // Cancel current utterance
+                    speechSynthesis.speak(currentUtterance); // Restart with updated rate
+                }
+            }
+        }
+
+        // Event Listeners for Buttons
         document.getElementById("start-reading").addEventListener("click", startReading);
         document.getElementById("pause-reading").addEventListener("click", pauseReading);
         document.getElementById("stop-reading").addEventListener("click", stopReading);
+        document.getElementById("increase-speed").addEventListener("click", () => adjustSpeechSpeed(true));
+        document.getElementById("decrease-speed").addEventListener("click", () => adjustSpeechSpeed(false));
 
         // Page navigation controls
         document.getElementById("prev-page").addEventListener("click", () => {
@@ -151,6 +172,41 @@ function renderPage(num) {
             renderPage(pageNum);
         });
 
+        // Dragging functionality for progress bar
+        let isDragging = false; // Flag to check if dragging is active
+        const progressBarContainer = document.getElementById("progress-bar-container");
+        const progressBar = document.getElementById("progress-bar");
+        const draggable = document.getElementById("draggable");
+        const progressText = document.getElementById("progress-percent");
+
+        function updateProgressBar(mouseX) {
+            const containerWidth = progressBarContainer.offsetWidth;
+            const newLeft = Math.min(Math.max(0, mouseX), containerWidth);
+            const percentage = (newLeft / containerWidth) * 100;
+            progressBar.style.width = `${percentage}%`;
+            draggable.style.left = `${newLeft - draggable.offsetWidth / 2}px`;
+            const pageNumber = Math.round((percentage / 100) * pdfDoc.numPages);
+            pageNum = pageNumber;
+            document.getElementById('page-num').textContent = pageNum;
+            progressText.textContent = pageNum === pdfDoc.numPages ? "Completed" : `${Math.round(percentage)}%`;
+            renderPage(pageNum);
+        }
+
+        draggable.addEventListener("mousedown", (event) => {
+            isDragging = true;
+            const mouseMoveHandler = (moveEvent) => {
+                if (isDragging) {
+                    updateProgressBar(moveEvent.clientX - progressBarContainer.getBoundingClientRect().left);
+                }
+            };
+            const mouseUpHandler = () => {
+                isDragging = false;
+                document.removeEventListener("mousemove", mouseMoveHandler);
+                document.removeEventListener("mouseup", mouseUpHandler);
+            };
+            document.addEventListener("mousemove", mouseMoveHandler);
+            document.addEventListener("mouseup", mouseUpHandler);
+        });
     </script>
 </body>
 </html>

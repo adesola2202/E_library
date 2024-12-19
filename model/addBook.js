@@ -15,7 +15,16 @@ const authenticateToken = (req,res,next) =>{
         
     jwt.verify(token,"secretkey", async(err,user)=>{
         if(err)return res.status(403).json({error:"invalid Token"})
-            req.user = user         
+            req.user = user   
+        
+        try {
+            const books = await client.db(db_name).collection(db_table).find({}).toArray();
+            console.log("Books fetched from database:", books);  // Check what books are being fetched
+            res.render('adminBooks', { books });
+        } catch (err) {
+            console.error('Error fetching books:', err);
+            res.status(500).send('Failed to fetch books.');
+        }
 
         })
 }

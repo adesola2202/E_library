@@ -13,45 +13,50 @@
             margin: 0;
             padding: 0;
         }
-
+    
         .container {
             max-width: 800px;
             margin: 50px auto;
             background: #fff;
-            padding: 20px;
+            padding: 20px; /* Ensure consistent padding on all sides */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
+    
         h1 {
             text-align: center;
             color: #333;
             margin-bottom: 20px;
         }
-
+    
         form {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-
+    
         label {
             font-size: 1rem;
             color: #444;
         }
-
+    
         input[type="text"], textarea, input[type="file"] {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 1rem;
+            box-sizing: border-box;  /* Ensure padding is included in the width calculation */
         }
-
+    
         textarea {
             min-height: 150px;
         }
-
+    
+        input[type="file"] {
+            padding: 10px 0;  /* Adjust padding to make file input consistent */
+        }
+    
         button {
             padding: 10px 15px;
             font-size: 1rem;
@@ -62,11 +67,30 @@
             cursor: pointer;
             transition: background 0.3s;
         }
-
+    
         button:hover {
             background: #0056b3;
         }
 
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            text-align: center;
+            border-radius: 4px;
+            text-decoration: none;  /* Remove underline from link */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        /* Hover state for the button */
+        .button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);  /* Slight lift effect on hover */
+        }
+
+    
         .back-link {
             display: block;
             text-align: center;
@@ -74,25 +98,84 @@
             text-decoration: none;
             color: #007bff;
         }
-
+    
         .back-link:hover {
             color: #0056b3;
         }
-
+    
         /* Style for the image preview */
         .image-preview {
             max-width: 200px;
             margin-top: 15px;
             display: none;  /* Hidden by default */
         }
-
+    
         /* Style for error messages */
         .error-message {
             color: red;
             font-size: 0.9rem;
             margin-top: -10px;
         }
+    
+        /* Media Queries for Responsiveness */
+    
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                max-width: 100%; /* Allow container to take full width on smaller screens */
+            }
+    
+            h1 {
+                font-size: 1.5rem;
+            }
+    
+            input[type="text"], textarea, input[type="file"], button {
+                font-size: 0.9rem; /* Slightly reduce font size on smaller screens */
+                padding: 8px; /* Reduce padding for better fitting */
+            }
+    
+            .image-preview {
+                max-width: 150px; /* Adjust image preview size */
+            }
+    
+            button {
+                padding: 8px 12px; /* Smaller button padding */
+            }
+    
+            .error-message {
+                font-size: 0.8rem; /* Adjust error message font size */
+            }
+        }
+    
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+                margin: 20px; /* Reduce margin on very small screens */
+            }
+    
+            h1 {
+                font-size: 1.2rem;
+            }
+    
+            input[type="text"], textarea, input[type="file"], button {
+                font-size: 0.8rem; /* Further reduce font size on very small screens */
+                padding: 6px; /* Even smaller padding for smaller screens */
+            }
+    
+            .image-preview {
+                max-width: 120px; /* Adjust image preview size for very small screens */
+            }
+    
+            button {
+                padding: 6px 10px; /* Smaller button padding */
+            }
+    
+            .error-message {
+                font-size: 0.7rem; /* Smaller error message font size */
+            }
+        }
     </style>
+    
 </head>
 <body>
     <div class="container">
@@ -117,35 +200,30 @@
             <img id="image-preview" class="image-preview" src="" alt="Image Preview">
 
             <label for="pdf">Book PDF:</label>
-            <input type="file" id="pdf" name="Pdfupload" accept="application/pdf" required>
+            <input type="file" id="book_content" name="Pdfupload" accept="application/pdf" required>
             <div id="pdf-error" class="error-message"></div>
         
             <button type="submit">Add Book</button>
+            <a href="/admin/books" class="button">Back to Admin Books</a>
         </form>
     </div>
 
     
-    <!-- Include TinyMCE CDN -->
-<script src="https://cdn.tiny.cloud/1/xsvfpksqk482n861zy14xasoj2rzq8dewyb09c0uytur8jo8/tinymce/6/tinymce.min.js"></script>
+    <!-- Include CK Editor CDN -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
 
 
     <script>
-    // Initialize TinyMCE editor
-    tinymce.init({
-        selector: '#description',
-        plugins: 'removeformat',  // Add the removeformat plugin
-        toolbar: 'removeformat',  // Show the removeformat button in the toolbar
-        valid_elements: 'p,br',  // Only allow <p> and <br> tags (you can modify this if needed)
-        content_style: "p, ul, ol, li { margin: 0; padding: 0; }",  // Basic styling to prevent unnecessary spacing
-        setup: function(editor) {
-            editor.on('change', function() {
-                // Automatically remove unwanted HTML tags (e.g., <strong>, <em>)
-                let content = editor.getContent();
-                let plainTextContent = content.replace(/<\/?[^>]+(>|$)/g, "");  // Remove all HTML tags
-                editor.setContent(plainTextContent);  // Set the cleaned-up content back to the editor
-            });
-        }
+    // Initialize CKEditor
+    ClassicEditor
+    .create(document.querySelector('#description'), {
+        disallowedContent: 'script; *[on*]',  // Disallow script tags and any event handler attributes
+        allowedContent: 'p; a[!href]; strong; em; ul; ol; li; br',  // Allow specific tags
+    })
+    .catch(error => {
+        console.error(error);
     });
+
 
         // Function to preview the image before uploading
         document.querySelector('#image').addEventListener('change', function(event) {
