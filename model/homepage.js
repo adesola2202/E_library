@@ -15,16 +15,20 @@ const authenticateToken = (req,res,next) =>{
         if(err)return res.status(403).json({error:"invalid Token"})
             req.user = user 
         try {
-            // Fetch all books from the database
-            const books = await client.db(db_name).collection(db_table).find().toArray();
+            // Fetch only books from the database those with 'book_content' field
+            const books = await client.db(db_name)
+                .collection(db_table)
+                .find({ book_content: { $exists: true } }) // This filters for documents with a 'book_content' field
+                .toArray();
         
             // Render the homepage view with the books
-            res.render('homepage', { books});
+            res.render('homepage', { books });
         
         } catch (err) {
             console.error('Error fetching books:', err);
             res.status(500).send('Error loading books.');
         }
+        
     })        
 
 }

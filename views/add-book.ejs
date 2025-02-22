@@ -203,7 +203,7 @@
             <input type="file" id="book_content" name="Pdfupload" accept="application/pdf" required>
             <div id="pdf-error" class="error-message"></div>
         
-            <button type="submit">Add Book</button>
+            <button type="submit" id="submitPost">Add Book</button>
             <a href="/admin/books" class="button">Back to Admin Books</a>
         </form>
     </div>
@@ -216,13 +216,11 @@
     <script>
     // Initialize CKEditor
     ClassicEditor
-    .create(document.querySelector('#description'), {
-        disallowedContent: 'script; *[on*]',  // Disallow script tags and any event handler attributes
-        allowedContent: 'p; a[!href]; strong; em; ul; ol; li; br',  // Allow specific tags
+    .create(document.querySelector('#description'))
+    .then(editor => {
+           window.blogEditor = editor;
+
     })
-    .catch(error => {
-        console.error(error);
-    });
 
 
         // Function to preview the image before uploading

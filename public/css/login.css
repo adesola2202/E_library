@@ -85,7 +85,7 @@
     }
 
     /* Error message styling */
-    .error-message {
+    /* .error-message {
         background-color: #f8d7da;
         color: #721c24;
         border: 1px solid #f5c6cb;
@@ -98,7 +98,7 @@
         align-items: center;
         gap: 10px;
         width: 100%;
-    }
+    } */
 
     .error-message .error-icon {
         font-size: 1.2rem;

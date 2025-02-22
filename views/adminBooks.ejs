@@ -33,44 +33,47 @@
     
     <a href="/admin/add-book" class="btn-primary">Add New Book</a>
 
-    <div class="container">
-        <div class="grid">
-            <% books.forEach(book => { %>
-                <div class="book-card">
-                    <!-- Book Image -->
-                    <div class="book-image">
-                        <% if (book.image) { %>
-                            <img src="<%= book.image %>" alt="<%= book.title %>">
-                        <% } else { %>
-                            <p style="padding: 50px; color: #888;">No image available</p>
-                        <% } %>
-                    </div>
-
-                    <!-- Book Details -->
-                    <div class="book-details">
-                        <h2><%= book.title %></h2>
-                        <p><strong>Author:</strong> <%= book.author %></p>
-                        <p>
-                            <%= book.description ? book.description.split(' ').slice(0, 10).join(' ') + '...' : 'No description available.' %>
-                            <button class="read-more" 
-                                    data-title="<%= book.title %>" 
-                                    data-description="<%= book.description || 'No description available.' %>" 
-                                    data-image="<%= book.image || '/path/to/default-image.jpg' %>">
-                               Read More
-                            </button>
-                        </p>
-                    </div>
-
-                    <!-- Actions -->
-                    <div class="actions">
-                        <a href="/admin/edit-book/<%= book._id %>">Edit</a>
-                        <form action="/admin/delete-book/<%= book._id %>" method="POST" class="delete-form" data-id="<%= book._id %>">
-                            <button type="button" onclick="showDeleteModal(event)">Delete</button>
-                        </form>
-                        <a href="/read/<%= book._id %>" class="btn success">Read this book</a>
-                    </div>
+    <div class="grid">
+        <% books.forEach(book => { %>
+            <div class="book-card">
+                <!-- Book Image -->
+                <div class="book-image">
+                    <% if (book.image) { %>
+                        <img src="<%= book.image %>" alt="<%= book.title %>">
+                    <% } else { %>
+                        <p style="padding: 50px; color: #888;">No image available</p>
+                    <% } %>
                 </div>
-            <% }); %>
+    
+                <!-- Book Details -->
+                <div class="book-details">
+                    <h2><%= book.title %></h2>
+                    <p><strong>Author:</strong> <%= book.author %></p>
+                    <p>
+                        <%- book.description ? book.description.split(' ').slice(0, 10).join(' ') + '...' : 'No description available.' %>
+                        <button class="read-more" 
+                                data-title="<%= book.title %>" 
+                                data-description="<%= book.description || 'No description available.' %>" 
+                                data-image="<%= book.image || '/path/to/default-image.jpg' %>">
+                           Read More
+                        </button>
+                    </p>
+                </div>
+    
+                <!-- Actions -->
+                <div class="actions">
+                    <a href="/admin/edit-book/<%= book._id %>">Edit</a>
+                    <form action="/admin/delete-book/<%= book._id %>" method="POST" class="delete-form" data-id="<%= book._id %>">
+                        <button type="button" onclick="showDeleteModal(event)">Delete</button>
+                    </form>
+                    <a href="/read/<%= book._id %>" class="btn success">Read this book</a>
+                </div>
+            </div>
+        <% }); %>
+        <!-- Container for the full description -->
+        <div id="book-description-container" class="book-description-modal" style="display:none;">
+            <button onclick="closeDescription()">Close</button>
+            <div id="full-description"></div>
         </div>
     </div>
     <a href="/holyland/admin" class="back-link">Back to Dashboard</a>
@@ -85,10 +88,23 @@
     </div>
 
     <script>
+                document.querySelectorAll('.read-more').forEach(button => {
+        button.addEventListener('click', function() {
+            const description = this.getAttribute('data-description');
+            console.log(description)
+            
+            // Set description with innerHTML to preserve HTML tags
+            const descriptionContainer = document.getElementById('full-description');
+            descriptionContainer.innerHTML = description; // This will render HTML tags
+
+            // Show the modal with the full description
+            document.getElementById('book-description-container').style.display = 'block';
+        });
+    });
             // Modal functionality
             function openModal(title, description, imageSrc) {
             document.getElementById("modalTitle").textContent = title;
-            document.getElementById("modalDescription").textContent = description;
+            document.getElementById("modalDescription").innerHTML = description;
             document.getElementById("modalImage").src = imageSrc;
 
             document.getElementById("descriptionModal").style.display = "block";

@@ -11,8 +11,6 @@ const path = require("path")
 const cookieParser = require("cookie-parser") 
 const bodyParser = require("body-parser")
 const session = require("express-session")
-const { v4: uuidv4 } = require('uuid');
-const sanitizeHtml = require('sanitize-html');
 const auth = require("./model/authorise")
 const authenticate = require("./model/admi")
 const authent= require("./model/read") 
@@ -92,7 +90,7 @@ server.get("/login",(req,res)=>{
 server.post("/login", async (req, res) => {
     const email = req.body.email.trim();
     const password = req.body.password.trim();
-
+    
     // Check if email or password is empty
     if (!email || !password) {
         return res.render('login', { message: "Please fill in all the fields." });
@@ -105,17 +103,20 @@ server.post("/login", async (req, res) => {
             return res.render('login', { message: "Invalid email or password." });
         }
 
+        // Compare the entered password with the hashed password in the database
+        const doMatch = await bcrypt.compare(password, savedUser.password);
+        
+        if (!doMatch) {
+            // If the password doesn't match, return an error
+            return res.render('login', { message: "Invalid email or password." });
+        }
+
         // Check if the user is an admin
         if (savedUser.isAdmin) {
-            const doMatch = await bcrypt.compare(password, savedUser.password);
-            if (doMatch) {
-                const token = jwt.sign({ _id: savedUser._id }, "secretkey", { expiresIn: '1h' });//generate token
-                res.cookie("token", token, { httpOnly: true });// sends token as cookie with name token
-                req.session.user = token;
-                return res.redirect("/holyland/admin"); 
-            } else {
-                return res.render('login', { message: "Invalid email or password." });
-            }
+            const token = jwt.sign({ _id: savedUser._id }, "secretkey", { expiresIn: '1h' }); // Generate token
+            res.cookie("token", token, { httpOnly: true }); // Send token as cookie with name 'token'
+            req.session.user = token;
+            return res.redirect("/holyland/admin");
         } else {
             const token = jwt.sign({ _id: savedUser._id }, "secretkey");
             res.cookie("token", token, { httpOnly: true });
@@ -127,6 +128,7 @@ server.post("/login", async (req, res) => {
         return res.render('login', { message: "An error occurred. Please try again." });
     }
 });
+
 
 
 server.post("/logout", (req, res) => {
@@ -204,16 +206,25 @@ server.post("/userregister", async (req, res) => {
     if (errorMessage) {
         return res.render('userregister', { error: errorMessage });
     }
+
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const profile = { username: username, isAdmin: false, password: hashedPassword, email: email };
-        await client.db(process.env.DB_NAME).collection(db_table).insertOne(profile);
+        const result = await client.db(process.env.DB_NAME).collection(db_table).insertOne(profile);
+
+        // Generate JWT token
+        const token = jwt.sign({ userId: result.insertedId, username: profile.username }, "secretkey", { expiresIn: '1h' });
+
+        // Store token in a cookie
+        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' }); // Use secure flag in production
+
         return res.redirect('/homepage');
     } catch (error) {
         console.error('Error during user registration:', error);
         return res.status(500).send("Error during user registration");
     }
 });
+
   
 
 server.post('/add-to-want-to-read', async (req, res) => {
@@ -376,13 +387,8 @@ server.post('/admin/add-book', upload.fields([{ name: 'Imgupload' }, { name: 'Pd
         console.log('Missing required fields:', { title, author, description, imagePath, pdfPath });
         return res.status(400).send('All fields, including image and PDF, are required.');
     }
-    const sanitizedDescription = sanitizeHtml(description, {
-        allowedTags: [ 'p', 'a', 'strong', 'em', 'ul', 'ol', 'li', 'br' ],
-        allowedAttributes: {
-            a: [ 'href' ]
-        }
-    });
-    console.log('Sanitized Description:', sanitizedDescription); 
+
+   
 
     try {
         // Upload the image to Cloudinary
@@ -401,7 +407,7 @@ server.post('/admin/add-book', upload.fields([{ name: 'Imgupload' }, { name: 'Pd
         const newBook = {
             title,
             author,
-            description: sanitizedDescription,
+            description,
             image: cloudinaryResult.secure_url,
             book_content: pdfRelativePath,  // Save the dynamic relative path
             createdAt: new Date(),
@@ -452,35 +458,49 @@ server.post('/admin/edit-book/:id', upload.fields([{ name: 'Imgupload' }, { name
     try {
         // Fetch the existing book
         const book = await client.db(db_name).collection(db_table).findOne({ _id: new mongodb.ObjectId(bookId) });
-        if (!book) return res.status(404).send('Book not found.');
+        if (!book) {
+            return res.status(404).send('Book not found.');
+        }
 
+        // Prepare updated fields
         let updatedFields = { title, author, description };
 
         // If a new image is uploaded, replace it
         if (imagePath) {
             // Upload the new image to Cloudinary
             const cloudinaryResult = await cloudinary.uploader.upload(imagePath, { folder: "sample" });
-            updatedFields.image = cloudinaryResult.secure_url;  // Save the new image URL
+            updatedFields.image = cloudinaryResult.secure_url;
 
-            // Optionally delete old image from Cloudinary (if needed)
-            fs.unlinkSync(imagePath);  // Remove the uploaded local image file
+            // Delete the local image file
+            fs.unlinkSync(imagePath);
         } else {
             updatedFields.image = book.image; // Keep the old image if no new image is uploaded
         }
 
         // If a new PDF is uploaded, replace it
         if (pdfPath) {
-            updatedFields.pdf = pdfPath; // Update with new local file path or uploaded URL
-            fs.unlinkSync(pdfPath); // Remove the uploaded local PDF file
+            const pdfFileName = path.basename(pdfPath); // Extract file name (e.g., `book.pdf`)
+            const pdfRelativePath = path.join('/images/uploaded', pdfFileName).replace(/\\+/g, '/'); // Generate relative path
+            updatedFields.book_content = pdfRelativePath;
+
+            // Delete the local PDF file
+            //fs.unlinkSync(pdfPath);
         } else {
-            updatedFields.pdf = book.pdf; // Keep the old PDF if not updated
+            updatedFields.book_content = book.book_content; // Keep the old PDF path if no new PDF is uploaded
         }
 
         // Update the book in the database
-        await client.db(db_name).collection(db_table).updateOne(
+        const result = await client.db(db_name).collection(db_table).updateOne(
             { _id: new mongodb.ObjectId(bookId) },
             { $set: updatedFields }
         );
+
+        // Check if the update was successful
+        if (result.matchedCount === 0) {
+            return res.status(404).send('Failed to update book. Book not found.');
+        }
+
+        console.log('Book updated successfully:', updatedFields);
 
         res.redirect('/admin/books');
     } catch (err) {
@@ -488,6 +508,7 @@ server.post('/admin/edit-book/:id', upload.fields([{ name: 'Imgupload' }, { name
         res.status(500).send('Failed to update book.');
     }
 });
+
 
 
 
